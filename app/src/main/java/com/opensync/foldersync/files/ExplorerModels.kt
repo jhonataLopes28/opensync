@@ -9,10 +9,10 @@ sealed interface ExplorerLocation {
 }
 
 enum class SortBy(val label: String) {
-    NAME("Name"),
-    SIZE("Size"),
+    NAME("Nome"),
+    SIZE("Tamanho"),
     DATE("Date modified"),
-    TYPE("Type")
+    TYPE("Tipo")
 }
 
 /** Files staged for a copy or move, remembering which location they came from. */

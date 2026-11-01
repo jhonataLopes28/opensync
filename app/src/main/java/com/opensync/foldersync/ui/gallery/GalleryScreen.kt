@@ -187,7 +187,7 @@ fun GalleryScreen(
                     android.content.Intent(context, editor).putExtra("edit_path", f.absolutePath)
                 )
             } else {
-                val what = if (item.isVideo) "video" else "photo"
+                val what = if (item.isVideo) "video" else "foto"
                 android.widget.Toast.makeText(context, "Couldn't open this $what", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
@@ -221,7 +221,7 @@ fun GalleryScreen(
                     navigationIcon = {
                         if (state.canBack) {
                             IconButton(onClick = { vm.back() }) {
-                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                             }
                         } else {
                             IconButton(onClick = openDrawer) { Icon(Icons.Filled.Menu, contentDescription = "Menu") }
@@ -238,7 +238,7 @@ fun GalleryScreen(
                         if (state.source is GallerySource.Device && !state.inAlbum) {
                             Box {
                                 IconButton(onClick = { sortMenuOpen = true }) {
-                                    Icon(Icons.Filled.Sort, contentDescription = "Sort albums")
+                                    Icon(Icons.Filled.Sort, contentDescription = "Ordenar álbuns")
                                 }
                                 DropdownMenu(expanded = sortMenuOpen, onDismissRequest = { sortMenuOpen = false }) {
                                     AlbumSort.entries.forEach { option ->
@@ -260,7 +260,7 @@ fun GalleryScreen(
         floatingActionButton = {
             if (state.browsingFiles && !state.inSelectionMode && state.viewerIndex == null) {
                 FloatingActionButton(onClick = { showNewFolder = true }) {
-                    Icon(Icons.Filled.CreateNewFolder, contentDescription = "New folder")
+                    Icon(Icons.Filled.CreateNewFolder, contentDescription = "Nova pasta")
                 }
             }
         }
@@ -280,8 +280,8 @@ fun GalleryScreen(
 
             if (state.hasClipboard && state.browsingFiles) {
                 GalleryActionBar(
-                    text = "Clipboard ready",
-                    confirmLabel = "Paste here",
+                    text = "Área de transferência pronta",
+                    confirmLabel = "Colar aqui",
                     onConfirm = vm::paste,
                     onCancel = vm::clearClipboard
                 )
@@ -339,35 +339,35 @@ fun GalleryScreen(
     }
 
     if (showNewFolder) {
-        GalleryTextDialog("New folder", "", "Create", onDismiss = { showNewFolder = false }) { name ->
+        GalleryTextDialog("Nova pasta", "", "Criar", onDismiss = { showNewFolder = false }) { name ->
             vm.newFolder(name); showNewFolder = false
         }
     }
     renameTarget?.let { target ->
-        GalleryTextDialog("Rename", target.name, "Rename", onDismiss = { renameTarget = null }) { name ->
+        GalleryTextDialog("Renomear", target.name, "Renomear", onDismiss = { renameTarget = null }) { name ->
             vm.renameItem(target, name); renameTarget = null
         }
     }
     if (showDeleteConfirm) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
-            title = { Text("Delete ${state.selection.size} item(s)?") },
-            text = { Text("This cannot be undone.") },
+            title = { Text("Excluir ${state.selection.size} item(ns)?") },
+            text = { Text("Esta ação não pode ser desfeita.") },
             confirmButton = {
-                TextButton(onClick = { showDeleteConfirm = false; vm.deleteSelected() }) { Text("Delete") }
+                TextButton(onClick = { showDeleteConfirm = false; vm.deleteSelected() }) { Text("Excluir") }
             },
-            dismissButton = { TextButton(onClick = { showDeleteConfirm = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showDeleteConfirm = false }) { Text("Cancelar") } }
         )
     }
     if (showVaultConfirm) {
         AlertDialog(
             onDismissRequest = { showVaultConfirm = false },
-            title = { Text("Move to vault?") },
+            title = { Text("Mover para o cofre?") },
             text = { Text("${state.selection.size} item(s) will be encrypted into the vault and removed from here. (Folders are skipped.)") },
             confirmButton = {
-                TextButton(onClick = { showVaultConfirm = false; vm.moveSelectedToVault() }) { Text("Move") }
+                TextButton(onClick = { showVaultConfirm = false; vm.moveSelectedToVault() }) { Text("Mover") }
             },
-            dismissButton = { TextButton(onClick = { showVaultConfirm = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showVaultConfirm = false }) { Text("Cancelar") } }
         )
     }
     detailsTarget?.let { target ->
@@ -404,23 +404,23 @@ fun GalleryScreen(
     viewerDeleteItem?.let { item ->
         AlertDialog(
             onDismissRequest = { viewerDeleteItem = null },
-            title = { Text("Delete this ${if (item.isVideo) "video" else "photo"}?") },
-            text = { Text("This cannot be undone.") },
+            title = { Text("Excluir este ${if (item.isVideo) "vídeo" else "foto"}?") },
+            text = { Text("Esta ação não pode ser desfeita.") },
             confirmButton = {
-                TextButton(onClick = { vm.deleteViewerItem(item); viewerDeleteItem = null }) { Text("Delete") }
+                TextButton(onClick = { vm.deleteViewerItem(item); viewerDeleteItem = null }) { Text("Excluir") }
             },
-            dismissButton = { TextButton(onClick = { viewerDeleteItem = null }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { viewerDeleteItem = null }) { Text("Cancelar") } }
         )
     }
     viewerVaultItem?.let { item ->
         AlertDialog(
             onDismissRequest = { viewerVaultItem = null },
-            title = { Text("Move to vault?") },
-            text = { Text("This ${if (item.isVideo) "video" else "photo"} will be encrypted into the vault and removed from here.") },
+            title = { Text("Mover para o cofre?") },
+            text = { Text("Este ${if (item.isVideo) "vídeo" else "foto"} será criptografado no cofre e removido daqui.") },
             confirmButton = {
-                TextButton(onClick = { vm.vaultViewerItem(item); viewerVaultItem = null }) { Text("Move") }
+                TextButton(onClick = { vm.vaultViewerItem(item); viewerVaultItem = null }) { Text("Mover") }
             },
-            dismissButton = { TextButton(onClick = { viewerVaultItem = null }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { viewerVaultItem = null }) { Text("Cancelar") } }
         )
     }
 }
@@ -443,32 +443,32 @@ private fun GallerySelectionBar(
 ) {
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Cancel") }
+            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Cancelar") }
         },
-        title = { Text("$count selected") },
+        title = { Text("$count selecionado(s)") },
         actions = {
             // Primary actions as icons; overflow the rest so nothing gets clipped off-screen.
-            IconButton(onClick = onShare) { Icon(Icons.Filled.Share, contentDescription = "Share") }
-            IconButton(onClick = onCopy) { Icon(Icons.Filled.ContentCopy, contentDescription = "Copy") }
-            IconButton(onClick = onCut) { Icon(Icons.Filled.ContentCut, contentDescription = "Cut") }
-            IconButton(onClick = onDelete) { Icon(Icons.Filled.Delete, contentDescription = "Delete") }
+            IconButton(onClick = onShare) { Icon(Icons.Filled.Share, contentDescription = "Compartilhar") }
+            IconButton(onClick = onCopy) { Icon(Icons.Filled.ContentCopy, contentDescription = "Copiar") }
+            IconButton(onClick = onCut) { Icon(Icons.Filled.ContentCut, contentDescription = "Recortar") }
+            IconButton(onClick = onDelete) { Icon(Icons.Filled.Delete, contentDescription = "Excluir") }
             Box {
                 var overflow by remember { mutableStateOf(false) }
                 IconButton(onClick = { overflow = true }) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                    Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
                 }
                 DropdownMenu(expanded = overflow, onDismissRequest = { overflow = false }) {
                     DropdownMenuItem(
-                        text = { Text("Move to vault") },
+                        text = { Text("Mover para o cofre") },
                         leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
                         onClick = { overflow = false; onMoveToVault() }
                     )
                     if (canRename) {
-                        DropdownMenuItem(text = { Text("Edit") }, onClick = { overflow = false; onEdit() })
-                        DropdownMenuItem(text = { Text("Details") }, onClick = { overflow = false; onDetails() })
-                        DropdownMenuItem(text = { Text("Rename") }, onClick = { overflow = false; onRename() })
+                        DropdownMenuItem(text = { Text("Editar") }, onClick = { overflow = false; onEdit() })
+                        DropdownMenuItem(text = { Text("Detalhes") }, onClick = { overflow = false; onDetails() })
+                        DropdownMenuItem(text = { Text("Renomear") }, onClick = { overflow = false; onRename() })
                     }
-                    DropdownMenuItem(text = { Text("Select all") }, onClick = { overflow = false; onSelectAll() })
+                    DropdownMenuItem(text = { Text("Selecionar tudo") }, onClick = { overflow = false; onSelectAll() })
                 }
             }
         }
@@ -484,7 +484,7 @@ private fun GalleryActionBar(text: String, confirmLabel: String, onConfirm: () -
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(text, Modifier.weight(1f), color = MaterialTheme.colorScheme.onSecondaryContainer)
-            OutlinedButton(onClick = onCancel) { Text("Cancel") }
+            OutlinedButton(onClick = onCancel) { Text("Cancelar") }
             TextButton(onClick = onConfirm) { Text(confirmLabel) }
         }
     }
@@ -511,7 +511,7 @@ private fun GalleryTextDialog(
                 Text(confirmLabel)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
@@ -528,17 +528,17 @@ private fun GallerySourceSelector(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleLarge)
-            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Change source")
+            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Alterar origem")
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             DropdownMenuItem(
-                text = { Text("Device") },
-                onClick = { onPick(GallerySource.Device, "Device"); expanded = false }
+                text = { Text("Dispositivo") },
+                onClick = { onPick(GallerySource.Device, "Dispositivo"); expanded = false }
             )
             DropdownMenuItem(
-                text = { Text("Internal storage (folders)") },
+                text = { Text("Armazenamento interno (pastas)") },
                 onClick = {
-                    onPick(GallerySource.Provider(ExplorerLocation.LocalRoot), "Internal storage"); expanded = false
+                    onPick(GallerySource.Provider(ExplorerLocation.LocalRoot), "Armazenamento interno"); expanded = false
                 }
             )
             accounts.forEach { acc ->
@@ -556,15 +556,15 @@ private fun GallerySourceSelector(
 @Composable
 private fun MediaPermissionPrompt(onGrant: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Allow access to your photos and videos to show the gallery.")
-        Button(onClick = onGrant) { Text("Allow access") }
+        Text("Permita o acesso às suas fotos e vídeos para exibir a galeria.")
+        Button(onClick = onGrant) { Text("Permitir acesso") }
     }
 }
 
 @Composable
 private fun AlbumGrid(albums: List<Album>, bottomInset: Dp, onOpen: (Album) -> Unit) {
     if (albums.isEmpty()) {
-        EmptyBox("No albums")
+        EmptyBox("Nenhum álbum")
         return
     }
     val gridState = rememberLazyGridState()
@@ -601,7 +601,7 @@ private fun MediaGrid(
     onToggleMedia: (MediaItem) -> Unit
 ) {
     if (folders.isEmpty() && media.isEmpty()) {
-        EmptyBox("No photos or videos here")
+        EmptyBox("Nenhuma foto ou vídeo aqui")
         return
     }
     val gridState = rememberLazyGridState()
@@ -787,15 +787,15 @@ private fun MediaViewer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onClose) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Close", tint = Color.White)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Fechar", tint = Color.White)
                     }
                     Spacer(Modifier.weight(1f))
                     current?.let { c ->
-                        IconButton(onClick = { onShare(c) }) { Icon(Icons.Filled.Share, "Share", tint = Color.White) }
-                        IconButton(onClick = { onEdit(c) }) { Icon(Icons.Filled.Edit, "Edit", tint = Color.White) }
-                        IconButton(onClick = { onShowDetails(c) }) { Icon(Icons.Filled.Info, "Details", tint = Color.White) }
-                        IconButton(onClick = { onVault(c) }) { Icon(Icons.Filled.Lock, "Move to vault", tint = Color.White) }
-                        IconButton(onClick = { onDelete(c) }) { Icon(Icons.Filled.Delete, "Delete", tint = Color.White) }
+                        IconButton(onClick = { onShare(c) }) { Icon(Icons.Filled.Share, "Compartilhar", tint = Color.White) }
+                        IconButton(onClick = { onEdit(c) }) { Icon(Icons.Filled.Edit, "Editar", tint = Color.White) }
+                        IconButton(onClick = { onShowDetails(c) }) { Icon(Icons.Filled.Info, "Detalhes", tint = Color.White) }
+                        IconButton(onClick = { onVault(c) }) { Icon(Icons.Filled.Lock, "Mover para o cofre", tint = Color.White) }
+                        IconButton(onClick = { onDelete(c) }) { Icon(Icons.Filled.Delete, "Excluir", tint = Color.White) }
                     }
                 }
             }

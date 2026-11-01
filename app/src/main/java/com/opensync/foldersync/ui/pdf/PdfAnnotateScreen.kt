@@ -104,13 +104,13 @@ fun PdfAnnotateScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
     var pendingTextPos by remember { mutableStateOf(Offset.Zero) }
 
     DisposableEffect(path) {
-        if (path == null) error = "No file to annotate"
+        if (path == null) error = "Nenhum arquivo para anotar"
         else try {
             val opened = PdfDoc.open(File(path))
             doc = opened
             pageCount = opened.pageCount
         } catch (e: Exception) {
-            error = e.message ?: "Cannot open this PDF"
+            error = e.message ?: "Não foi possível abrir este PDF"
         }
         onDispose { doc?.close() }
     }
@@ -148,11 +148,11 @@ fun PdfAnnotateScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                 val dest = annotatedDest(File(src))
                 PdfAnnotator.save(File(src), dest, annById)
                 busy = false
-                Toast.makeText(context, "Saved → ${dest.name}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Salvo em → ${dest.name}", Toast.LENGTH_LONG).show()
                 onSaved(dest.absolutePath)
             } catch (e: Exception) {
                 busy = false
-                error = e.message ?: "Save failed"
+                error = e.message ?: "Falha ao salvar"
             }
         }
     }
@@ -160,18 +160,18 @@ fun PdfAnnotateScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Annotate") },
+                title = { Text("Anotar") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
                     IconButton(onClick = { undo() }) {
-                        Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Undo")
+                        Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Desfazer")
                     }
                     IconButton(onClick = { save() }, enabled = !busy) {
-                        Icon(Icons.Filled.Check, contentDescription = "Save")
+                        Icon(Icons.Filled.Check, contentDescription = "Salvar")
                     }
                 }
             )
@@ -289,7 +289,7 @@ fun PdfAnnotateScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
         var text by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { showTextDialog = false },
-            title = { Text("Add text") },
+            title = { Text("Adicionar texto") },
             text = {
                 OutlinedTextField(value = text, onValueChange = { text = it }, singleLine = false,
                     modifier = Modifier.fillMaxWidth())
@@ -306,7 +306,7 @@ fun PdfAnnotateScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                     }
                 ) { Text("Add") }
             },
-            dismissButton = { TextButton(onClick = { showTextDialog = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showTextDialog = false }) { Text("Cancelar") } }
         )
     }
 }
@@ -326,8 +326,8 @@ private fun AnnotateToolbar(
         Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ToolButton(Icons.Filled.Edit, "Pen", tool == Tool.PEN) { onTool(Tool.PEN) }
-                ToolButton(Icons.Filled.Brush, "Highlighter", tool == Tool.HIGHLIGHTER) { onTool(Tool.HIGHLIGHTER) }
-                ToolButton(Icons.Filled.TextFields, "Text", tool == Tool.TEXT) { onTool(Tool.TEXT) }
+                ToolButton(Icons.Filled.Brush, "Marca-texto", tool == Tool.HIGHLIGHTER) { onTool(Tool.HIGHLIGHTER) }
+                ToolButton(Icons.Filled.TextFields, "Texto", tool == Tool.TEXT) { onTool(Tool.TEXT) }
                 Row(Modifier.padding(start = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     PALETTE.forEach { swatch ->
                         Box(
@@ -344,11 +344,11 @@ private fun AnnotateToolbar(
                 horizontalArrangement = Arrangement.Center
             ) {
                 IconButton(onClick = onPrev, enabled = page > 0) {
-                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Previous page")
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Página anterior")
                 }
                 Text("Page ${page + 1} / $pageCount", style = MaterialTheme.typography.bodyMedium)
                 IconButton(onClick = onNext, enabled = page < pageCount - 1) {
-                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Next page")
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Próxima página")
                 }
             }
         }

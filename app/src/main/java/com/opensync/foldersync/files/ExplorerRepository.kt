@@ -42,7 +42,7 @@ class ExplorerRepository(private val context: Context) {
         ExplorerLocation.LocalRoot -> ProviderFactory.forLocal("/")
         is ExplorerLocation.Remote -> {
             val account = db.accountDao().getById(loc.accountId)
-                ?: throw IllegalStateException("Account not found")
+                ?: throw IllegalStateException("Conta não encontrada")
             ProviderFactory.forAccount(account, "")
         }
     }

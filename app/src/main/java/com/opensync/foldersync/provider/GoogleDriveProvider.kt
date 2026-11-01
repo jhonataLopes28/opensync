@@ -158,7 +158,7 @@ class GoogleDriveProvider(
                 try {
                     if (resp.code == 401 && attempt == 0) { invalidateToken(); continue }
                     if (!resp.isSuccessful) throw IOException("Drive upload init ${resp.code}: ${resp.body?.string()?.take(200)}")
-                    loc = resp.header("Location") ?: throw IOException("Drive: no resumable session URL")
+                    loc = resp.header("Localização") ?: throw IOException("Drive: no resumable session URL")
                     break
                 } finally { resp.close() }
             }

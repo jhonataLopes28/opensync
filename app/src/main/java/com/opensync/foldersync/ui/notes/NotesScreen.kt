@@ -416,9 +416,9 @@ class NotesViewModel : ViewModel() {
         viewModelScope.launch {
             when {
                 !VaultManager.exists() ->
-                    _state.value = _state.value.copy(error = "Create a vault first (Vault tab).")
+                    _state.value = _state.value.copy(error = "Crie um cofre primeiro (aba Cofre).")
                 !VaultManager.isUnlocked ->
-                    _state.value = _state.value.copy(error = "Unlock the vault first (Vault tab).")
+                    _state.value = _state.value.copy(error = "Desbloqueie o cofre primeiro (aba Cofre).")
                 else -> {
                     val error = withContext(Dispatchers.IO) {
                         runCatching {
@@ -618,11 +618,11 @@ fun NotesScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                if (state.rootDir.isBlank()) "Notes" else titleFor(state),
+                                if (state.rootDir.isBlank()) "Notas" else titleFor(state),
                                 maxLines = 1, overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f, fill = false)
                             )
-                            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Notes folders")
+                            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Pastas de notas")
                         }
                     },
                     navigationIcon = {
@@ -631,19 +631,19 @@ fun NotesScreen(
                     actions = {
                         if (state.rootDir.isNotBlank()) {
                             IconButton(onClick = { vm.toggleSearch() }) {
-                                Icon(Icons.Filled.Search, contentDescription = "Search")
+                                Icon(Icons.Filled.Search, contentDescription = "Pesquisar")
                             }
                             IconButton(onClick = { vm.toggleIncludeSub() }) {
                                 Icon(
                                     Icons.Filled.UnfoldMore,
-                                    contentDescription = "Include subfolders",
+                                    contentDescription = "Incluir subpastas",
                                     tint = if (state.includeSub) MaterialTheme.colorScheme.primary
                                     else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                             Box {
                                 IconButton(onClick = { sortOpen = true }) {
-                                    Icon(Icons.Filled.Sort, contentDescription = "Sort")
+                                    Icon(Icons.Filled.Sort, contentDescription = "Ordenar")
                                 }
                                 DropdownMenu(expanded = sortOpen, onDismissRequest = { sortOpen = false }) {
                                     SortBy.entries.forEach { s ->
@@ -660,11 +660,11 @@ fun NotesScreen(
                         }
                         Box {
                             IconButton(onClick = { menuOpen = true }) {
-                                Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                                Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
                             }
                             DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
                                 DropdownMenuItem(
-                                    text = { Text("New folder") },
+                                    text = { Text("Nova pasta") },
                                     onClick = { menuOpen = false; showNewFolder = true }
                                 )
                                 DropdownMenuItem(
@@ -672,11 +672,11 @@ fun NotesScreen(
                                     onClick = { menuOpen = false; vm.convertImported() }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Notes folders…") },
+                                    text = { Text("Pastas de notas…") },
                                     onClick = { menuOpen = false; showFolders = true }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text(if (state.activeRemote != null) "Sync now" else "Rescan") },
+                                    text = { Text(if (state.activeRemote != null) "Sincronizar agora" else "Verificar novamente") },
                                     onClick = { menuOpen = false; vm.refresh() }
                                 )
                             }
@@ -729,7 +729,7 @@ fun NotesScreen(
                                     .padding(horizontal = 16.dp, vertical = 12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Filled.ArrowUpward, contentDescription = "Up")
+                                Icon(Icons.Filled.ArrowUpward, contentDescription = "Subir um nível")
                                 Text("..", Modifier.padding(start = 12.dp),
                                     style = MaterialTheme.typography.bodyLarge)
                             }
@@ -807,35 +807,35 @@ fun NotesScreen(
         )
     }
     if (showNewFolder) {
-        NotesTextDialog("New folder", "", "Create", onDismiss = { showNewFolder = false }) { name ->
+        NotesTextDialog("Nova pasta", "", "Criar", onDismiss = { showNewFolder = false }) { name ->
             vm.newFolder(name); showNewFolder = false
         }
     }
     renameTarget?.let { path ->
-        NotesTextDialog("Rename", File(path).name, "Rename", onDismiss = { renameTarget = null }) { name ->
+        NotesTextDialog("Renomear", File(path).name, "Renomear", onDismiss = { renameTarget = null }) { name ->
             vm.rename(path, name); renameTarget = null
         }
     }
     if (showDeleteConfirm) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
-            title = { Text("Delete ${state.selection.size} item(s)?") },
-            text = { Text("This permanently deletes the selected files and folders.") },
+            title = { Text("Excluir ${state.selection.size} item(ns)?") },
+            text = { Text("Isso excluirá permanentemente os arquivos e as pastas selecionados.") },
             confirmButton = {
-                TextButton(onClick = { showDeleteConfirm = false; vm.deleteSelected() }) { Text("Delete") }
+                TextButton(onClick = { showDeleteConfirm = false; vm.deleteSelected() }) { Text("Excluir") }
             },
-            dismissButton = { TextButton(onClick = { showDeleteConfirm = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showDeleteConfirm = false }) { Text("Cancelar") } }
         )
     }
     if (showVaultConfirm) {
         AlertDialog(
             onDismissRequest = { showVaultConfirm = false },
-            title = { Text("Move to vault?") },
+            title = { Text("Mover para o cofre?") },
             text = { Text("${state.selection.size} note(s) will be encrypted into the vault and removed from your notes folder. (Folders are skipped.)") },
             confirmButton = {
-                TextButton(onClick = { showVaultConfirm = false; vm.moveSelectedToVault() }) { Text("Move") }
+                TextButton(onClick = { showVaultConfirm = false; vm.moveSelectedToVault() }) { Text("Mover") }
             },
-            dismissButton = { TextButton(onClick = { showVaultConfirm = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showVaultConfirm = false }) { Text("Cancelar") } }
         )
     }
 }
@@ -884,7 +884,7 @@ private fun NoteRow(
         if (entry.pinned) {
             Icon(
                 Icons.Filled.PushPin,
-                contentDescription = "Pinned",
+                contentDescription = "Fixada",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(18.dp)
             )
@@ -892,7 +892,7 @@ private fun NoteRow(
         if (selectionMode && selected) {
             Icon(
                 Icons.Filled.CheckCircle,
-                contentDescription = "Selected",
+                contentDescription = "Selecionado",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(start = 8.dp)
             )
@@ -902,7 +902,7 @@ private fun NoteRow(
 
 private fun noteMeta(entry: NoteEntry): String = buildString {
     if (entry.isDir) {
-        append("Folder")
+        append("Pasta")
     } else {
         append(formatTimestamp(entry.modifiedTime))
         append("  •  ").append(formatBytes(entry.size))
@@ -911,7 +911,7 @@ private fun noteMeta(entry: NoteEntry): String = buildString {
 }
 
 private fun titleFor(state: NotesState): String {
-    if (state.currentDir == state.rootDir) return state.activeRemote?.name ?: "Notes"
+    if (state.currentDir == state.rootDir) return state.activeRemote?.name ?: "Notas"
     return File(state.currentDir).name
 }
 
@@ -932,27 +932,27 @@ private fun NotesSelectionBar(
 ) {
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Cancel") }
+            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Cancelar") }
         },
-        title = { Text("$count selected") },
+        title = { Text("$count selecionado(s)") },
         actions = {
             // Primary actions as icons; overflow the rest so nothing gets clipped off-screen.
-            IconButton(onClick = onShare) { Icon(Icons.Filled.Share, contentDescription = "Share") }
-            IconButton(onClick = onPin) { Icon(Icons.Filled.PushPin, contentDescription = "Pin / unpin") }
-            IconButton(onClick = onMoveToVault) { Icon(Icons.Filled.Lock, contentDescription = "Move to vault") }
-            IconButton(onClick = onDelete) { Icon(Icons.Filled.Delete, contentDescription = "Delete") }
+            IconButton(onClick = onShare) { Icon(Icons.Filled.Share, contentDescription = "Compartilhar") }
+            IconButton(onClick = onPin) { Icon(Icons.Filled.PushPin, contentDescription = "Fixar/desafixar") }
+            IconButton(onClick = onMoveToVault) { Icon(Icons.Filled.Lock, contentDescription = "Mover para o cofre") }
+            IconButton(onClick = onDelete) { Icon(Icons.Filled.Delete, contentDescription = "Excluir") }
             Box {
                 var overflow by remember { mutableStateOf(false) }
                 IconButton(onClick = { overflow = true }) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                    Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
                 }
                 DropdownMenu(expanded = overflow, onDismissRequest = { overflow = false }) {
                     if (canRename) {
-                        DropdownMenuItem(text = { Text("Rename") }, onClick = { overflow = false; onRename() })
+                        DropdownMenuItem(text = { Text("Renomear") }, onClick = { overflow = false; onRename() })
                     }
-                    DropdownMenuItem(text = { Text("Copy") }, onClick = { overflow = false; onCopy() })
-                    DropdownMenuItem(text = { Text("Cut") }, onClick = { overflow = false; onCut() })
-                    DropdownMenuItem(text = { Text("Select all") }, onClick = { overflow = false; onSelectAll() })
+                    DropdownMenuItem(text = { Text("Copiar") }, onClick = { overflow = false; onCopy() })
+                    DropdownMenuItem(text = { Text("Recortar") }, onClick = { overflow = false; onCut() })
+                    DropdownMenuItem(text = { Text("Selecionar tudo") }, onClick = { overflow = false; onSelectAll() })
                 }
             }
         }
@@ -964,13 +964,13 @@ private fun NotesSelectionBar(
 private fun NotesSearchBar(query: String, onQuery: (String) -> Unit, onClose: () -> Unit) {
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Close search") }
+            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Fechar pesquisa") }
         },
         title = {
             TextField(
                 value = query,
                 onValueChange = onQuery,
-                placeholder = { Text("Search notes") },
+                placeholder = { Text("Pesquisar notas") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.colors(
@@ -994,12 +994,12 @@ private fun PasteBar(count: Int, cut: Boolean, onPaste: () -> Unit, onCancel: ()
         ) {
             Icon(Icons.Filled.ContentPaste, contentDescription = null)
             Text(
-                "${if (cut) "Move" else "Copy"} $count item(s) here",
+                "${if (cut) "Mover" else "Copiar"} $count item(s) here",
                 Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium
             )
-            TextButton(onClick = onCancel) { Text("Cancel") }
-            Button(onClick = onPaste) { Text("Paste") }
+            TextButton(onClick = onCancel) { Text("Cancelar") }
+            Button(onClick = onPaste) { Text("Colar") }
         }
     }
 }
@@ -1012,7 +1012,7 @@ private fun SetupCard(modifier: Modifier, onChoose: () -> Unit, onChooseRemote: 
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Icon(Icons.Filled.Description, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-        Text("Your notes", style = MaterialTheme.typography.titleMedium)
+        Text("Suas notas", style = MaterialTheme.typography.titleMedium)
         Text(
             "Pick a folder to keep your notes in. Then you can write new notes right here, and OpenSync " +
                 "will also read PDF/text/image exports and best-effort parse raw Samsung Notes (.spd/.sdoc) " +
@@ -1021,8 +1021,8 @@ private fun SetupCard(modifier: Modifier, onChoose: () -> Unit, onChooseRemote: 
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Button(onClick = onChoose) { Text("Choose notes folder") }
-        OutlinedButton(onClick = onChooseRemote) { Text("Use a folder on an account") }
+        Button(onClick = onChoose) { Text("Escolher pasta de notas") }
+        OutlinedButton(onClick = onChooseRemote) { Text("Usar uma pasta de uma conta") }
     }
 }
 
@@ -1040,19 +1040,19 @@ private fun NotesFoldersDialog(
     var removeTarget by remember { mutableStateOf<RemoteNotesFolder?>(null) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Notes folders") },
+        title = { Text("Pastas de notas") },
         text = {
             val listState = rememberLazyListState()
             LazyColumn(Modifier.height(320.dp).verticalScrollbar(listState), state = listState) {
                 item {
                     NotesFolderRow(
                         icon = Icons.Filled.PhoneAndroid,
-                        title = "On this phone",
-                        subtitle = state.localRoot.ifBlank { "Not chosen yet" },
+                        title = "Neste telefone",
+                        subtitle = state.localRoot.ifBlank { "Ainda não escolhido" },
                         active = state.activeRemote == null && state.rootDir.isNotBlank(),
                         onClick = onShowLocal
                     ) {
-                        if (state.localRoot.isNotBlank()) TextButton(onClick = onChangeLocal) { Text("Change") }
+                        if (state.localRoot.isNotBlank()) TextButton(onClick = onChangeLocal) { Text("Alterar") }
                     }
                 }
                 items(state.remoteFolders, key = { it.id }) { folder ->
@@ -1064,7 +1064,7 @@ private fun NotesFoldersDialog(
                         onClick = { onShowRemote(folder) }
                     ) {
                         IconButton(onClick = { removeTarget = folder }) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Remove")
+                            Icon(Icons.Filled.Delete, contentDescription = "Remover")
                         }
                     }
                 }
@@ -1079,8 +1079,8 @@ private fun NotesFoldersDialog(
                 }
             }
         },
-        confirmButton = { Button(onClick = onAddRemote) { Text("Add account folder") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Close") } }
+        confirmButton = { Button(onClick = onAddRemote) { Text("Adicionar pasta de conta") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
     )
     removeTarget?.let { folder ->
         AlertDialog(
@@ -1088,9 +1088,9 @@ private fun NotesFoldersDialog(
             title = { Text("Remove '${folder.name}'?") },
             text = { Text("It's only removed from this phone. The notes on the account are left untouched.") },
             confirmButton = {
-                TextButton(onClick = { removeTarget = null; onRemoveRemote(folder) }) { Text("Remove") }
+                TextButton(onClick = { removeTarget = null; onRemoveRemote(folder) }) { Text("Remover") }
             },
-            dismissButton = { TextButton(onClick = { removeTarget = null }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { removeTarget = null }) { Text("Cancelar") } }
         )
     }
 }
@@ -1144,7 +1144,7 @@ private fun AddRemoteNotesFolder(
     }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Which account?") },
+        title = { Text("Qual conta?") },
         text = {
             val listState = rememberLazyListState()
             LazyColumn(Modifier.height(280.dp).verticalScrollbar(listState), state = listState) {
@@ -1169,7 +1169,7 @@ private fun AddRemoteNotesFolder(
             }
         },
         confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
@@ -1193,7 +1193,7 @@ private fun NotesTextDialog(
                 Text(confirmLabel)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
@@ -1240,12 +1240,12 @@ private fun NotesFolderPickerDialog(initial: String, onDismiss: () -> Unit, onSe
                     }
                 }
                 if (subDirs.isEmpty()) {
-                    item { Text("(no sub-folders)", Modifier.padding(vertical = 12.dp)) }
+                    item { Text("(sem subpastas)", Modifier.padding(vertical = 12.dp)) }
                 }
             }
         },
-        confirmButton = { Button(onClick = { onSelect(current.absolutePath) }) { Text("Use this folder") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        confirmButton = { Button(onClick = { onSelect(current.absolutePath) }) { Text("Usar esta pasta") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
@@ -1268,8 +1268,8 @@ private fun openWithSystem(context: Context, file: File) {
             setDataAndType(uri, mime)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        context.startActivity(Intent.createChooser(intent, "Open with"))
+        context.startActivity(Intent.createChooser(intent, "Abrir com"))
     } catch (e: Exception) {
-        Toast.makeText(context, "No app can open this file", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Nenhum aplicativo pode abrir este arquivo", Toast.LENGTH_SHORT).show()
     }
 }

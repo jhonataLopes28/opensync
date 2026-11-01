@@ -77,14 +77,14 @@ fun PdfPageOrganizerScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
 
     DisposableEffect(path) {
         if (path == null) {
-            error = "No file to edit"
+            error = "Nenhum arquivo para editar"
         } else {
             try {
                 val opened = PdfDoc.open(File(path))
                 doc = opened
                 pages = (0 until opened.pageCount).map { PageItem(it, 0) }
             } catch (e: Exception) {
-                error = e.message ?: "Cannot open this PDF"
+                error = e.message ?: "Não foi possível abrir este PDF"
             }
         }
         onDispose { doc?.close() }
@@ -109,7 +109,7 @@ fun PdfPageOrganizerScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                     onSaved(dest.absolutePath)
                 } catch (e: Exception) {
                     busy = false
-                    error = e.message ?: "Merge failed"
+                    error = e.message ?: "Falha ao mesclar"
                 }
             }
         }
@@ -118,7 +118,7 @@ fun PdfPageOrganizerScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
     fun save() {
         val src = path ?: return
         if (pages.isEmpty()) {
-            Toast.makeText(context, "No pages left to save", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Não há páginas restantes para salvar", Toast.LENGTH_SHORT).show()
             return
         }
         scope.launch {
@@ -127,11 +127,11 @@ fun PdfPageOrganizerScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                 val dest = editedDest(File(src))
                 PdfEditor.savePages(File(src), pages.map { PageOp(it.sourceIndex, it.rotation) }, dest)
                 busy = false
-                Toast.makeText(context, "Saved → ${dest.name}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Salvo em → ${dest.name}", Toast.LENGTH_LONG).show()
                 onSaved(dest.absolutePath)
             } catch (e: Exception) {
                 busy = false
-                error = e.message ?: "Save failed"
+                error = e.message ?: "Falha ao salvar"
             }
         }
     }
@@ -139,18 +139,18 @@ fun PdfPageOrganizerScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Organize pages") },
+                title = { Text("Organizar páginas") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
                     IconButton(onClick = { mergeLauncher.launch(arrayOf("application/pdf")) }) {
-                        Icon(Icons.Filled.MergeType, contentDescription = "Merge another PDF")
+                        Icon(Icons.Filled.MergeType, contentDescription = "Mesclar outro PDF")
                     }
                     IconButton(onClick = { save() }, enabled = !busy) {
-                        Icon(Icons.Filled.Check, contentDescription = "Save")
+                        Icon(Icons.Filled.Check, contentDescription = "Salvar")
                     }
                 }
             )
@@ -249,17 +249,17 @@ private fun PageRow(
             )
             Column {
                 IconButton(onClick = onUp, enabled = position > 0) {
-                    Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Move up")
+                    Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Mover para cima")
                 }
                 IconButton(onClick = onDown, enabled = position < total - 1) {
-                    Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Move down")
+                    Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Mover para baixo")
                 }
             }
             IconButton(onClick = onRotate) {
-                Icon(Icons.Filled.RotateRight, contentDescription = "Rotate")
+                Icon(Icons.Filled.RotateRight, contentDescription = "Girar")
             }
             IconButton(onClick = onDelete) {
-                Icon(Icons.Filled.Delete, contentDescription = "Delete page")
+                Icon(Icons.Filled.Delete, contentDescription = "Excluir página")
             }
         }
     }

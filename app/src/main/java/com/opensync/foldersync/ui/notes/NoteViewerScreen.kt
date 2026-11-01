@@ -135,13 +135,13 @@ fun NoteViewerScreen(onBack: () -> Unit, onEdit: (String) -> Unit = {}) {
                 title = { Text(file?.name ?: "Note", maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
                     if (isRaw) {
                         IconButton(onClick = { convertAndEdit() }, enabled = parsed != null && !converting) {
-                            Icon(Icons.Filled.Edit, contentDescription = "Convert to editable note")
+                            Icon(Icons.Filled.Edit, contentDescription = "Converter em nota editável")
                         }
                     }
                     if (file != null) {
@@ -155,11 +155,11 @@ fun NoteViewerScreen(onBack: () -> Unit, onEdit: (String) -> Unit = {}) {
                                     else ShareUtil.shareFiles(context, listOf(file))
                                 }
                             ) {
-                                Icon(Icons.Filled.Share, contentDescription = "Share")
+                                Icon(Icons.Filled.Share, contentDescription = "Compartilhar")
                             }
                             DropdownMenu(expanded = shareMenu, onDismissRequest = { shareMenu = false }) {
                                 DropdownMenuItem(
-                                    text = { Text("Share as text") },
+                                    text = { Text("Compartilhar como texto") },
                                     onClick = { shareMenu = false; shareAsText() }
                                 )
                                 DropdownMenuItem(
@@ -182,7 +182,7 @@ fun NoteViewerScreen(onBack: () -> Unit, onEdit: (String) -> Unit = {}) {
         Box(Modifier.padding(inner).fillMaxSize()) {
             when {
                 file == null || !file.exists() -> Text(
-                    "File not found",
+                    "Arquivo não encontrado",
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.align(Alignment.Center).padding(16.dp)
                 )
@@ -250,7 +250,7 @@ private fun RawNoteContent(p: ParsedNote) {
         }
         if (p.text.isNotBlank()) {
             if (p.imagePaths.isNotEmpty()) item { HorizontalDivider() }
-            item { Text("Extracted text", style = MaterialTheme.typography.titleSmall) }
+            item { Text("Texto extraído", style = MaterialTheme.typography.titleSmall) }
             item {
                 SelectionContainer {
                     Text(p.text, style = MaterialTheme.typography.bodyMedium)
@@ -273,7 +273,7 @@ private fun TextNoteContent(file: File) {
     val scrollState = rememberScrollState()
     SelectionContainer {
         Text(
-            text.ifBlank { "(empty)" },
+            text.ifBlank { "(vazio)" },
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.fillMaxSize().verticalScrollbar(scrollState).verticalScroll(scrollState).padding(16.dp)
         )

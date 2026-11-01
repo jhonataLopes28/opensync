@@ -141,7 +141,7 @@ class VaultViewModel : ViewModel() {
     fun unlock(password: String) = viewModelScope.launch {
         _state.update { it.copy(busy = true, error = null) }
         val ok = withContext(Dispatchers.IO) { VaultManager.unlock(password.toCharArray()) }
-        _state.update { it.copy(busy = false, error = if (ok) null else "Wrong passphrase") }
+        _state.update { it.copy(busy = false, error = if (ok) null else "Frase-senha incorreta") }
         refresh()
     }
 
@@ -175,7 +175,7 @@ class VaultViewModel : ViewModel() {
 
     fun export(entry: VaultEntry, dest: Uri) = io {
         Graph.appContext.contentResolver.openOutputStream(dest)?.use { VaultManager.exportTo(entry, it) }
-            ?: error("Could not write to that location")
+            ?: error("Não foi possível gravar nesse local")
     }
 
     fun changePassword(current: String, new: String) = viewModelScope.launch {
@@ -183,7 +183,7 @@ class VaultViewModel : ViewModel() {
         val ok = withContext(Dispatchers.IO) {
             runCatching { VaultManager.changePassword(current.toCharArray(), new.toCharArray()) }.getOrDefault(false)
         }
-        _state.update { it.copy(busy = false, error = if (ok) "Passphrase changed" else "Current passphrase is wrong") }
+        _state.update { it.copy(busy = false, error = if (ok) "Passphrase changed" else "A frase-senha atual está incorreta") }
         refresh()
     }
 
@@ -244,14 +244,14 @@ fun VaultScreen(
             TopAppBar(
                 title = {
                     Text(
-                        if (state.unlocked && !state.atRoot) state.currentDir else "Vault",
+                        if (state.unlocked && !state.atRoot) state.currentDir else "Cofre",
                         maxLines = 1, overflow = TextOverflow.Ellipsis
                     )
                 },
                 navigationIcon = {
                     if (state.unlocked && !state.atRoot) {
                         IconButton(onClick = { vm.up() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Up")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Subir um nível")
                         }
                     } else {
                         IconButton(onClick = openDrawer) { Icon(Icons.Filled.Menu, contentDescription = "Menu") }
@@ -259,18 +259,18 @@ fun VaultScreen(
                 },
                 actions = {
                     if (state.unlocked) {
-                        IconButton(onClick = { vm.lock() }) { Icon(Icons.Filled.Lock, contentDescription = "Lock") }
+                        IconButton(onClick = { vm.lock() }) { Icon(Icons.Filled.Lock, contentDescription = "Bloquear") }
                         Box {
                             IconButton(onClick = { overflowOpen = true }) {
-                                Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                                Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
                             }
                             DropdownMenu(expanded = overflowOpen, onDismissRequest = { overflowOpen = false }) {
                                 DropdownMenuItem(
-                                    text = { Text("New folder") },
+                                    text = { Text("Nova pasta") },
                                     onClick = { overflowOpen = false; showNewFolder = true }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Change passphrase") },
+                                    text = { Text("Alterar frase-senha") },
                                     onClick = { overflowOpen = false; showChangePw = true }
                                 )
                             }
@@ -283,7 +283,7 @@ fun VaultScreen(
             if (state.unlocked) {
                 FloatingActionButton(onClick = {
                     importLauncher.launch(arrayOf("*/*"))
-                }) { Icon(Icons.Filled.Add, contentDescription = "Add files") }
+                }) { Icon(Icons.Filled.Add, contentDescription = "Adicionar arquivos") }
             }
         }
     ) { inner ->
@@ -315,8 +315,8 @@ fun VaultScreen(
 
     if (showNewFolder) {
         VaultTextDialog(
-            title = "New folder",
-            confirmLabel = "Create",
+            title = "Nova pasta",
+            confirmLabel = "Criar",
             onDismiss = { showNewFolder = false },
             onConfirm = { name -> vm.newFolder(name); showNewFolder = false }
         )
@@ -335,7 +335,7 @@ private fun CreateVault(modifier: Modifier, onCreate: (String) -> Unit) {
     var confirm by remember { mutableStateOf("") }
     val valid = pw.length >= 6 && pw == confirm
     Column(modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("Create your vault", style = MaterialTheme.typography.headlineSmall)
+        Text("Criar seu cofre", style = MaterialTheme.typography.headlineSmall)
         Text(
             "Pick a passphrase (6+ characters). It encrypts your files and is never stored — " +
                 "if you forget it, the files cannot be recovered.",
@@ -343,19 +343,19 @@ private fun CreateVault(modifier: Modifier, onCreate: (String) -> Unit) {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         OutlinedTextField(
-            value = pw, onValueChange = { pw = it }, label = { Text("Passphrase") },
+            value = pw, onValueChange = { pw = it }, label = { Text("Frase-senha") },
             singleLine = true, visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Password),
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            value = confirm, onValueChange = { confirm = it }, label = { Text("Confirm passphrase") },
+            value = confirm, onValueChange = { confirm = it }, label = { Text("Confirme a frase-senha") },
             singleLine = true, visualTransformation = PasswordVisualTransformation(),
             isError = confirm.isNotEmpty() && confirm != pw,
             modifier = Modifier.fillMaxWidth()
         )
         Button(onClick = { onCreate(pw) }, enabled = valid, modifier = Modifier.fillMaxWidth()) {
-            Text("Create vault")
+            Text("Criar cofre")
         }
     }
 }
@@ -365,15 +365,15 @@ private fun UnlockVault(modifier: Modifier, busy: Boolean, onUnlock: (String) ->
     var pw by remember { mutableStateOf("") }
     Column(modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Icon(Icons.Filled.Lock, contentDescription = null, modifier = Modifier.align(Alignment.CenterHorizontally))
-        Text("Vault is locked", style = MaterialTheme.typography.headlineSmall)
+        Text("O cofre está bloqueado", style = MaterialTheme.typography.headlineSmall)
         OutlinedTextField(
-            value = pw, onValueChange = { pw = it }, label = { Text("Passphrase") },
+            value = pw, onValueChange = { pw = it }, label = { Text("Frase-senha") },
             singleLine = true, visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Password),
             modifier = Modifier.fillMaxWidth()
         )
         Button(onClick = { onUnlock(pw) }, enabled = pw.isNotEmpty() && !busy, modifier = Modifier.fillMaxWidth()) {
-            Text("Unlock")
+            Text("Desbloquear")
         }
     }
 }
@@ -418,7 +418,7 @@ private fun VaultBrowser(
                     Text(folder, Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodyLarge)
                     IconButton(onClick = { deleteFolderFor = folder }) {
-                        Icon(Icons.Filled.Delete, contentDescription = "Delete folder")
+                        Icon(Icons.Filled.Delete, contentDescription = "Excluir pasta")
                     }
                 }
             }
@@ -443,10 +443,10 @@ private fun VaultBrowser(
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     IconButton(onClick = { exportFor = entry; exportLauncher.launch(entry.name) }) {
-                        Icon(Icons.Filled.Save, contentDescription = "Export")
+                        Icon(Icons.Filled.Save, contentDescription = "Exportar")
                     }
                     IconButton(onClick = { deleteFor = entry }) {
-                        Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                        Icon(Icons.Filled.Delete, contentDescription = "Excluir")
                     }
                 }
             }
@@ -456,19 +456,19 @@ private fun VaultBrowser(
     deleteFor?.let { entry ->
         AlertDialog(
             onDismissRequest = { deleteFor = null },
-            title = { Text("Remove from vault?") },
+            title = { Text("Remover do cofre?") },
             text = { Text("“${entry.name}” will be permanently deleted from the vault.") },
-            confirmButton = { TextButton(onClick = { onDelete(entry); deleteFor = null }) { Text("Delete") } },
-            dismissButton = { TextButton(onClick = { deleteFor = null }) { Text("Cancel") } }
+            confirmButton = { TextButton(onClick = { onDelete(entry); deleteFor = null }) { Text("Excluir") } },
+            dismissButton = { TextButton(onClick = { deleteFor = null }) { Text("Cancelar") } }
         )
     }
     deleteFolderFor?.let { folder ->
         AlertDialog(
             onDismissRequest = { deleteFolderFor = null },
-            title = { Text("Delete folder?") },
+            title = { Text("Excluir pasta?") },
             text = { Text("“$folder” and everything inside it will be permanently deleted.") },
-            confirmButton = { TextButton(onClick = { onDeleteFolder(folder); deleteFolderFor = null }) { Text("Delete") } },
-            dismissButton = { TextButton(onClick = { deleteFolderFor = null }) { Text("Cancel") } }
+            confirmButton = { TextButton(onClick = { onDeleteFolder(folder); deleteFolderFor = null }) { Text("Excluir") } },
+            dismissButton = { TextButton(onClick = { deleteFolderFor = null }) { Text("Cancelar") } }
         )
     }
     menuFor?.let { entry ->
@@ -477,11 +477,11 @@ private fun VaultBrowser(
             title = { Text(entry.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
             text = { Text(formatSize(entry.size)) },
             confirmButton = {
-                TextButton(onClick = { menuFor = null; onOpen(entry) }) { Text("Open") }
+                TextButton(onClick = { menuFor = null; onOpen(entry) }) { Text("Abrir") }
             },
             dismissButton = {
                 TextButton(onClick = { val e = entry; menuFor = null; exportFor = e; exportLauncher.launch(e.name) }) {
-                    Text("Export")
+                    Text("Exportar")
                 }
             }
         )
@@ -510,7 +510,7 @@ private fun VaultTextDialog(
                 Text(confirmLabel)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
@@ -522,29 +522,29 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit, onSubmit: (String, Strin
     val valid = current.isNotEmpty() && newPw.length >= 6 && newPw == confirm
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Change passphrase") },
+        title = { Text("Alterar frase-senha") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
-                    value = current, onValueChange = { current = it }, label = { Text("Current passphrase") },
+                    value = current, onValueChange = { current = it }, label = { Text("Frase-senha atual") },
                     singleLine = true, visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
-                    value = newPw, onValueChange = { newPw = it }, label = { Text("New passphrase (6+)") },
+                    value = newPw, onValueChange = { newPw = it }, label = { Text("Nova frase-senha (6 ou mais caracteres)") },
                     singleLine = true, visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
-                    value = confirm, onValueChange = { confirm = it }, label = { Text("Confirm new passphrase") },
+                    value = confirm, onValueChange = { confirm = it }, label = { Text("Confirme a nova frase-senha") },
                     singleLine = true, visualTransformation = PasswordVisualTransformation(),
                     isError = confirm.isNotEmpty() && confirm != newPw,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
         },
-        confirmButton = { TextButton(onClick = { onSubmit(current, newPw) }, enabled = valid) { Text("Change") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        confirmButton = { TextButton(onClick = { onSubmit(current, newPw) }, enabled = valid) { Text("Alterar") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
@@ -584,7 +584,7 @@ private fun openWithSystem(context: android.content.Context, file: File) {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         })
     } catch (e: Exception) {
-        Toast.makeText(context, "No app can open this file", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Nenhum aplicativo pode abrir este arquivo", Toast.LENGTH_SHORT).show()
     }
 }
 

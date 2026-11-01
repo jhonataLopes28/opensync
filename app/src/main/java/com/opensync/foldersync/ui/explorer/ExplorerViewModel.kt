@@ -32,7 +32,7 @@ import java.io.File
 
 data class ExplorerUiState(
     val location: ExplorerLocation = ExplorerLocation.LocalRoot,
-    val locationLabel: String = "Internal storage",
+    val locationLabel: String = "Armazenamento interno",
     val relDir: String = DEFAULT_LOCAL_DIR,
     val entries: List<RemoteFile> = emptyList(),
     val selection: Set<String> = emptySet(),
@@ -101,7 +101,7 @@ class ExplorerViewModel : ViewModel() {
         viewModelScope.launch {
             repo.setLocation(ExplorerLocation.LocalRoot)
             _state.update {
-                it.copy(location = ExplorerLocation.LocalRoot, locationLabel = "Internal storage", selection = emptySet())
+                it.copy(location = ExplorerLocation.LocalRoot, locationLabel = "Armazenamento interno", selection = emptySet())
             }
             navigate(absolutePath.trim('/'))
         }
@@ -127,7 +127,7 @@ class ExplorerViewModel : ViewModel() {
                 _state.update { it.copy(busyMessage = null, pendingShareCount = 0) }
                 refresh()
             } catch (e: Exception) {
-                _state.update { it.copy(busyMessage = null, error = e.message ?: "Save failed") }
+                _state.update { it.copy(busyMessage = null, error = e.message ?: "Falha ao salvar") }
             }
         }
     }
@@ -156,7 +156,7 @@ class ExplorerViewModel : ViewModel() {
             } catch (e: Exception) {
                 raw = emptyList()
                 _state.update {
-                    it.copy(entries = emptyList(), loading = false, error = e.message ?: "Cannot open folder")
+                    it.copy(entries = emptyList(), loading = false, error = e.message ?: "Não foi possível abrir a pasta")
                 }
             }
         }
@@ -184,7 +184,7 @@ class ExplorerViewModel : ViewModel() {
                     val file = repo.materialize(item)
                     _openFile.send(OpenedFile(file, remote?.accountId, remote?.let { item.relPath }))
                 } catch (e: Exception) {
-                    _state.update { it.copy(error = e.message ?: "Cannot open file") }
+                    _state.update { it.copy(error = e.message ?: "Não foi possível abrir o arquivo") }
                 }
             }
         }
@@ -216,7 +216,7 @@ class ExplorerViewModel : ViewModel() {
             repo.createFolder(_state.value.relDir, name)
             refresh()
         } catch (e: Exception) {
-            _state.update { it.copy(error = e.message ?: "Cannot create folder") }
+            _state.update { it.copy(error = e.message ?: "Não foi possível criar a pasta") }
         }
     }
 
@@ -226,7 +226,7 @@ class ExplorerViewModel : ViewModel() {
             clearSelection()
             refresh()
         } catch (e: Exception) {
-            _state.update { it.copy(error = e.message ?: "Cannot rename") }
+            _state.update { it.copy(error = e.message ?: "Não foi possível renomear") }
         }
     }
 
@@ -234,14 +234,14 @@ class ExplorerViewModel : ViewModel() {
         val items = selectedItems()
         if (items.isEmpty()) return
         viewModelScope.launch {
-            _state.update { it.copy(busyMessage = "Deleting…") }
+            _state.update { it.copy(busyMessage = "Excluindo…") }
             try {
                 repo.delete(items)
                 clearSelection()
                 _state.update { it.copy(busyMessage = null) }
                 refresh()
             } catch (e: Exception) {
-                _state.update { it.copy(busyMessage = null, error = e.message ?: "Cannot delete") }
+                _state.update { it.copy(busyMessage = null, error = e.message ?: "Não foi possível excluir") }
             }
         }
     }
@@ -254,11 +254,11 @@ class ExplorerViewModel : ViewModel() {
         viewModelScope.launch {
             when {
                 !VaultManager.exists() ->
-                    _state.update { it.copy(error = "Create a vault first (Vault tab).") }
+                    _state.update { it.copy(error = "Crie um cofre primeiro (aba Cofre).") }
                 !VaultManager.isUnlocked ->
-                    _state.update { it.copy(error = "Unlock the vault first (Vault tab).") }
+                    _state.update { it.copy(error = "Desbloqueie o cofre primeiro (aba Cofre).") }
                 else -> {
-                    _state.update { it.copy(busyMessage = "Moving to vault…") }
+                    _state.update { it.copy(busyMessage = "Movendo para o cofre…") }
                     val err = withContext(Dispatchers.IO) {
                         runCatching {
                             for (item in items) {
@@ -286,11 +286,11 @@ class ExplorerViewModel : ViewModel() {
     fun shareSelected() {
         val items = selectedItems().filter { !it.isDirectory }
         if (items.isEmpty()) {
-            _state.update { it.copy(error = "Only files can be shared — folders are skipped") }
+            _state.update { it.copy(error = "Somente arquivos podem ser compartilhados — pastas serão ignoradas") }
             return
         }
         viewModelScope.launch {
-            _state.update { it.copy(busyMessage = "Preparing to share…") }
+            _state.update { it.copy(busyMessage = "Preparando para compartilhar…") }
             try {
                 val files = withContext(Dispatchers.IO) { items.map { repo.materialize(it) } }
                 _state.update { it.copy(busyMessage = null, selection = emptySet()) }
@@ -318,7 +318,7 @@ class ExplorerViewModel : ViewModel() {
     fun paste() {
         val clip = SharedClipboard.clip ?: return
         viewModelScope.launch {
-            _state.update { it.copy(busyMessage = "Preparing…") }
+            _state.update { it.copy(busyMessage = "Preparando…") }
             try {
                 repo.paste(
                     clip = clip,
@@ -330,7 +330,7 @@ class ExplorerViewModel : ViewModel() {
                 _state.update { it.copy(busyMessage = null) }
                 refresh()
             } catch (e: Exception) {
-                _state.update { it.copy(busyMessage = null, error = e.message ?: "Paste failed") }
+                _state.update { it.copy(busyMessage = null, error = e.message ?: "Falha ao colar") }
             }
         }
     }

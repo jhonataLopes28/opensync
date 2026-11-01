@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 data class GalleryUiState(
     val source: GallerySource = GallerySource.Device,
-    val sourceLabel: String = "Device",
+    val sourceLabel: String = "Dispositivo",
     val loading: Boolean = false,
     val error: String? = null,
     val albums: List<Album> = emptyList(),
@@ -135,7 +135,7 @@ class GalleryViewModel : ViewModel() {
                     it.copy(albums = sortAlbums(rawAlbums, it.albumSort, it.albumAscending), loading = false)
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(loading = false, error = e.message ?: "Cannot read media") }
+                _state.update { it.copy(loading = false, error = e.message ?: "Não foi possível ler a mídia") }
             }
         }
     }
@@ -180,7 +180,7 @@ class GalleryViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(loading = false, error = e.message ?: "Cannot open album") }
+                _state.update { it.copy(loading = false, error = e.message ?: "Não foi possível abrir o álbum") }
             }
         }
     }
@@ -197,7 +197,7 @@ class GalleryViewModel : ViewModel() {
                 _state.update { it.copy(folders = folders, media = media, loading = false) }
                 startRemoteThumbs(media)
             } catch (e: Exception) {
-                _state.update { it.copy(loading = false, error = e.message ?: "Cannot open folder") }
+                _state.update { it.copy(loading = false, error = e.message ?: "Não foi possível abrir a pasta") }
             }
         }
     }
@@ -281,7 +281,7 @@ class GalleryViewModel : ViewModel() {
     fun deleteViewerItem(item: MediaItem) {
         val rf = item.remoteFile ?: return
         viewModelScope.launch {
-            _state.update { it.copy(busyMessage = "Deleting…") }
+            _state.update { it.copy(busyMessage = "Excluindo…") }
             runCatching { repo.delete(listOf(rf)) }
             _state.update { it.copy(busyMessage = null) }
             refreshAfterOp(listOf(absPath(rf.relPath)))
@@ -293,7 +293,7 @@ class GalleryViewModel : ViewModel() {
         val s = _state.value
         val items = s.media.filter { it.key in s.selection }
         if (items.isEmpty()) {
-            _state.update { it.copy(error = "Only photos and videos can be shared — folders are skipped") }
+            _state.update { it.copy(error = "Somente fotos e vídeos podem ser compartilhados — pastas serão ignoradas") }
             return
         }
         shareItems(items)
@@ -309,7 +309,7 @@ class GalleryViewModel : ViewModel() {
      */
     private fun shareItems(items: List<MediaItem>) {
         viewModelScope.launch {
-            _state.update { it.copy(busyMessage = "Preparing to share…") }
+            _state.update { it.copy(busyMessage = "Preparando para compartilhar…") }
             try {
                 val uris = withContext(Dispatchers.IO) {
                     items.map { item ->
@@ -338,10 +338,10 @@ class GalleryViewModel : ViewModel() {
             (s.source is GallerySource.Device && s.inAlbum)
         viewModelScope.launch {
             when {
-                !VaultManager.exists() -> _state.update { it.copy(error = "Create a vault first (Vault tab).") }
-                !VaultManager.isUnlocked -> _state.update { it.copy(error = "Unlock the vault first (Vault tab).") }
+                !VaultManager.exists() -> _state.update { it.copy(error = "Crie um cofre primeiro (aba Cofre).") }
+                !VaultManager.isUnlocked -> _state.update { it.copy(error = "Desbloqueie o cofre primeiro (aba Cofre).") }
                 else -> {
-                    _state.update { it.copy(busyMessage = "Moving to vault…") }
+                    _state.update { it.copy(busyMessage = "Movendo para o cofre…") }
                     val err = withContext(Dispatchers.IO) {
                         runCatching {
                             val f = repo.materialize(item)
@@ -391,7 +391,7 @@ class GalleryViewModel : ViewModel() {
         val clip = SharedClipboard.clip ?: return
         viewModelScope.launch {
             val dest = _state.value.relDir
-            _state.update { it.copy(busyMessage = "Preparing…") }
+            _state.update { it.copy(busyMessage = "Preparando…") }
             try {
                 repo.paste(
                     clip, dest,
@@ -404,7 +404,7 @@ class GalleryViewModel : ViewModel() {
                     if (clip.move) clip.items.map { absPath(it.relPath) } else emptyList()
                 refreshAfterOp(changed)
             } catch (e: Exception) {
-                _state.update { it.copy(busyMessage = null, error = e.message ?: "Paste failed") }
+                _state.update { it.copy(busyMessage = null, error = e.message ?: "Falha ao colar") }
             }
         }
     }
@@ -413,14 +413,14 @@ class GalleryViewModel : ViewModel() {
         val items = selectedFiles()
         if (items.isEmpty()) return
         viewModelScope.launch {
-            _state.update { it.copy(busyMessage = "Deleting…") }
+            _state.update { it.copy(busyMessage = "Excluindo…") }
             try {
                 val paths = items.map { absPath(it.relPath) }
                 repo.delete(items)
                 _state.update { it.copy(busyMessage = null, selection = emptySet()) }
                 refreshAfterOp(paths)
             } catch (e: Exception) {
-                _state.update { it.copy(busyMessage = null, error = e.message ?: "Delete failed") }
+                _state.update { it.copy(busyMessage = null, error = e.message ?: "Falha ao excluir") }
             }
         }
     }
@@ -436,12 +436,12 @@ class GalleryViewModel : ViewModel() {
         viewModelScope.launch {
             when {
                 !VaultManager.exists() ->
-                    _state.update { it.copy(error = "Create a vault first (Vault tab).") }
+                    _state.update { it.copy(error = "Crie um cofre primeiro (aba Cofre).") }
                 !VaultManager.isUnlocked ->
-                    _state.update { it.copy(error = "Unlock the vault first (Vault tab).") }
+                    _state.update { it.copy(error = "Desbloqueie o cofre primeiro (aba Cofre).") }
                 else -> {
                     val paths = mediaItems.mapNotNull { it.remoteFile?.let { rf -> absPath(rf.relPath) } }
-                    _state.update { it.copy(busyMessage = "Moving to vault…") }
+                    _state.update { it.copy(busyMessage = "Movendo para o cofre…") }
                     val err = withContext(Dispatchers.IO) {
                         runCatching {
                             for (item in mediaItems) {
@@ -467,7 +467,7 @@ class GalleryViewModel : ViewModel() {
                 _state.update { it.copy(selection = emptySet()) }
                 refreshAfterOp(listOf(oldPath, newPath))
             } catch (e: Exception) {
-                _state.update { it.copy(error = e.message ?: "Rename failed") }
+                _state.update { it.copy(error = e.message ?: "Falha ao renomear") }
             }
         }
     }
@@ -479,7 +479,7 @@ class GalleryViewModel : ViewModel() {
                 repo.createFolder(_state.value.relDir, name)
                 refreshAfterOp(emptyList())
             } catch (e: Exception) {
-                _state.update { it.copy(error = e.message ?: "Cannot create folder") }
+                _state.update { it.copy(error = e.message ?: "Não foi possível criar a pasta") }
             }
         }
     }

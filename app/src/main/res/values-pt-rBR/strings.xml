@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenSync</string>
+    <string name="tab_pairs">Pares de pastas</string>
+    <string name="tab_accounts">Contas</string>
+    <string name="tab_logs">Registro de sincronização</string>
+    <string name="tab_settings">Configurações</string>
+    <string name="sync_channel_name">Sincronização</string>
+    <string name="sync_channel_desc">Mostra o progresso durante a sincronização das pastas.</string>
+</resources>

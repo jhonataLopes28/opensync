@@ -239,7 +239,7 @@ class S3Provider(
                     val t = parser.text ?: ""
                     when {
                         inContents && tag == "Key" -> key = t
-                        inContents && tag == "Size" -> size = t.trim().toLongOrNull() ?: 0L
+                        inContents && tag == "Tamanho" -> size = t.trim().toLongOrNull() ?: 0L
                         inContents && tag == "LastModified" -> mod = parseIso(t.trim())
                         inCommon && tag == "Prefix" -> cp = t
                         !inContents && !inCommon && tag == "IsTruncated" -> truncated = t.trim() == "true"

@@ -63,7 +63,7 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.min
 import androidx.compose.foundation.Canvas as ComposeCanvas
 
-internal enum class DecorateMode(val label: String) { TEXT("Text"), STICKER("Stickers"), DRAW("Draw") }
+internal enum class DecorateMode(val label: String) { TEXT("Texto"), STICKER("Stickers"), DRAW("Draw") }
 
 internal val DECO_COLORS = listOf(
     0xFFFFFFFF, 0xFF000000, 0xFFE53935, 0xFFFB8C00, 0xFFFDD835, 0xFF43A047,
@@ -311,7 +311,7 @@ internal fun DecoratePanel(
                         TextButton(onClick = onAddText) {
                             Icon(Icons.Filled.Add, null, tint = Color.White)
                             Spacer(Modifier.width(6.dp))
-                            Text("Add text", color = Color.White)
+                            Text("Adicionar texto", color = Color.White)
                         }
                     }
                     Hint("Tap text on the video to change it; drag to move, pinch to resize.")
@@ -327,7 +327,7 @@ internal fun DecoratePanel(
                         }
                         Spacer(Modifier.weight(1f))
                         IconButton(onClick = { onEditText(t) }) { Icon(Icons.Filled.Edit, "Edit text", tint = Color.White) }
-                        IconButton(onClick = { onDelete(t) }) { Icon(Icons.Filled.Delete, "Delete", tint = Color.White) }
+                        IconButton(onClick = { onDelete(t) }) { Icon(Icons.Filled.Delete, "Excluir", tint = Color.White) }
                     }
                     SizeSlider(t.scale, 0.03f, 0.3f) { onUpdate(t.copy(scale = it)) }
                 }
@@ -350,7 +350,7 @@ internal fun DecoratePanel(
                 if (s != null) {
                     Row(Modifier.fillMaxWidth().padding(end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                         Box(Modifier.weight(1f)) { SizeSlider(s.scale, 0.06f, 0.6f) { onUpdate(s.copy(scale = it)) } }
-                        IconButton(onClick = { onDelete(s) }) { Icon(Icons.Filled.Delete, "Delete", tint = Color.White) }
+                        IconButton(onClick = { onDelete(s) }) { Icon(Icons.Filled.Delete, "Excluir", tint = Color.White) }
                     }
                 } else {
                     Hint("Tap a sticker to add it; drag to move, pinch to resize.")
@@ -413,7 +413,7 @@ internal fun ColorRow(selected: Int, onPick: (Int) -> Unit) {
 }
 
 @Composable
-private fun SizeSlider(value: Float, minV: Float, maxV: Float, label: String = "Size", onValue: (Float) -> Unit) {
+private fun SizeSlider(value: Float, minV: Float, maxV: Float, label: String = "Tamanho", onValue: (Float) -> Unit) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(label, color = Color(0xFFDDDDDD), fontSize = 13.sp, modifier = Modifier.width(50.dp))
         Slider(value = value.coerceIn(minV, maxV), onValueChange = onValue, valueRange = minV..maxV, modifier = Modifier.weight(1f))
@@ -432,7 +432,7 @@ internal fun TextDecorationDialog(
     var style by remember { mutableStateOf(initial?.style ?: LabelStyle.OUTLINE) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (initial == null) "Add text" else "Edit text") },
+        title = { Text(if (initial == null) "Adicionar texto" else "Edit text") },
         text = {
             Column {
                 OutlinedTextField(value = text, onValueChange = { text = it }, minLines = 1, maxLines = 4, modifier = Modifier.fillMaxWidth())
@@ -460,8 +460,8 @@ internal fun TextDecorationDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(text.trim(), color, style) }, enabled = text.isNotBlank()) { Text("Done") }
+            TextButton(onClick = { onConfirm(text.trim(), color, style) }, enabled = text.isNotBlank()) { Text("Concluído") }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }

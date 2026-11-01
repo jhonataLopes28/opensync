@@ -130,7 +130,7 @@ fun FolderPairEditScreen(
     // rememberSaveable: the flag must survive while we're away on the account editor.
     var awaitingNewAccount by rememberSaveable { mutableStateOf(false) }
 
-    // Auto-select an account created via "Add account" when we come back to this screen.
+    // Auto-select an account created via "Adicionar conta" when we come back to this screen.
     val newAccountId by AccountPickResult.lastCreatedId.collectAsState()
     LaunchedEffect(newAccountId) {
         if (awaitingNewAccount && newAccountId != null) {
@@ -143,17 +143,17 @@ fun FolderPairEditScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (pair.id == 0L) "New folder pair" else "Edit folder pair") },
+                title = { Text(if (pair.id == 0L) "Novo par de pastas" else "Editar par de pastas") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
                     TextButton(
                         onClick = { vm.save(onBack) },
                         enabled = pair.name.isNotBlank() && pair.localFolder.isNotBlank()
-                    ) { Text("Save") }
+                    ) { Text("Salvar") }
                 }
             )
         }
@@ -170,7 +170,7 @@ fun FolderPairEditScreen(
             OutlinedTextField(
                 value = pair.name,
                 onValueChange = { v -> vm.update { it.copy(name = v) } },
-                label = { Text("Name") },
+                label = { Text("Nome") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -178,11 +178,11 @@ fun FolderPairEditScreen(
             OutlinedTextField(
                 value = pair.localFolder,
                 onValueChange = { v -> vm.update { it.copy(localFolder = v) } },
-                label = { Text("Local folder") },
+                label = { Text("Pasta local") },
                 singleLine = true,
                 trailingIcon = {
                     IconButton(onClick = { showLocalPicker = true }) {
-                        Icon(Icons.Filled.Folder, contentDescription = "Browse")
+                        Icon(Icons.Filled.Folder, contentDescription = "Procurar")
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -191,10 +191,10 @@ fun FolderPairEditScreen(
             val remoteOptions: List<Account?> = listOf<Account?>(null) + accounts
             val selectedRemote = remoteOptions.firstOrNull { it?.id == pair.remoteAccountId }
             DropdownField(
-                label = "Remote target",
+                label = "Destino remoto",
                 options = remoteOptions,
                 selected = selectedRemote,
-                optionLabel = { acc -> acc?.let { "${it.name} (${it.type.label})" } ?: "Local device folder" },
+                optionLabel = { acc -> acc?.let { "${it.name} (${it.type.label})" } ?: "Pasta local do dispositivo" },
                 onSelected = { acc -> vm.update { it.copy(remoteAccountId = acc?.id) } }
             )
             TextButton(onClick = {
@@ -210,13 +210,13 @@ fun FolderPairEditScreen(
                 if (pair.remoteAccountId == null) {
                     {
                         IconButton(onClick = { showRemotePicker = true }) {
-                            Icon(Icons.Filled.Folder, contentDescription = "Browse")
+                            Icon(Icons.Filled.Folder, contentDescription = "Procurar")
                         }
                     }
                 } else if (selectedRemote != null) {
                     {
                         IconButton(onClick = { showAccountPicker = true }) {
-                            Icon(Icons.Filled.Folder, contentDescription = "Browse")
+                            Icon(Icons.Filled.Folder, contentDescription = "Procurar")
                         }
                     }
                 } else null
@@ -224,7 +224,7 @@ fun FolderPairEditScreen(
                 value = pair.remoteFolder,
                 onValueChange = { v -> vm.update { it.copy(remoteFolder = v) } },
                 label = {
-                    Text(if (pair.remoteAccountId == null) "Second local folder" else "Remote sub-folder")
+                    Text(if (pair.remoteAccountId == null) "Segunda pasta local" else "Subpasta remota")
                 },
                 singleLine = true,
                 trailingIcon = remoteTrailing,
@@ -232,7 +232,7 @@ fun FolderPairEditScreen(
             )
 
             DropdownField(
-                label = "Direction",
+                label = "Direção",
                 options = SyncDirection.entries,
                 selected = pair.direction,
                 optionLabel = { it.label },
@@ -240,26 +240,26 @@ fun FolderPairEditScreen(
             )
 
             DropdownField(
-                label = "Conflict resolution",
+                label = "Resolução de conflitos",
                 options = ConflictRule.entries,
                 selected = pair.conflictRule,
                 optionLabel = { it.label },
                 onSelected = { c -> vm.update { it.copy(conflictRule = c) } }
             )
 
-            SwitchRow("Include subfolders", pair.includeSubfolders) { b ->
+            SwitchRow("Incluir subpastas", pair.includeSubfolders) { b ->
                 vm.update { it.copy(includeSubfolders = b) }
             }
-            SwitchRow("Propagate deletions (delete orphans)", pair.deleteOrphans) { b ->
+            SwitchRow("Replicar exclusões (remover arquivos órfãos)", pair.deleteOrphans) { b ->
                 vm.update { it.copy(deleteOrphans = b) }
             }
-            SwitchRow("Only on Wi-Fi", pair.requireWifi) { b ->
+            SwitchRow("Somente no Wi-Fi", pair.requireWifi) { b ->
                 vm.update { it.copy(requireWifi = b) }
             }
-            SwitchRow("Only while charging", pair.requireCharging) { b ->
+            SwitchRow("Somente durante o carregamento", pair.requireCharging) { b ->
                 vm.update { it.copy(requireCharging = b) }
             }
-            SwitchRow("Enabled", pair.enabled) { b ->
+            SwitchRow("Ativado", pair.enabled) { b ->
                 vm.update { it.copy(enabled = b) }
             }
 
@@ -273,13 +273,13 @@ fun FolderPairEditScreen(
             OutlinedTextField(
                 value = pair.excludeFilter,
                 onValueChange = { v -> vm.update { it.copy(excludeFilter = v) } },
-                label = { Text("Exclude patterns (e.g. *.tmp, .DS_Store)") },
+                label = { Text("Padrões de exclusão (ex.: *.tmp, .DS_Store)") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
             DropdownField(
-                label = "Schedule",
+                label = "Agendamento",
                 options = ScheduleMode.entries,
                 selected = pair.scheduleMode,
                 optionLabel = { it.label },
@@ -289,7 +289,7 @@ fun FolderPairEditScreen(
             when (pair.scheduleMode) {
                 ScheduleMode.MANUAL -> {
                     Text(
-                        "Runs only when you tap Sync.",
+                        "Executa somente quando você toca em Sincronizar.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -300,7 +300,7 @@ fun FolderPairEditScreen(
                         onValueChange = { v ->
                             vm.update { it.copy(scheduleMinutes = v.filter(Char::isDigit).toIntOrNull() ?: 0) }
                         },
-                        label = { Text("Every N minutes (min 15)") },
+                        label = { Text("A cada N minutos (mínimo 15)") },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
@@ -317,10 +317,10 @@ fun FolderPairEditScreen(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Time: %02d:%02d".format(pair.dailyHour, pair.dailyMinute))
+                        Text("Horário: %02d:%02d".format(pair.dailyHour, pair.dailyMinute))
                     }
                     Text(
-                        "On these days:",
+                        "Nestes dias:",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -335,7 +335,7 @@ fun FolderPairEditScreen(
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.error
                     )
-                ) { Text("Delete folder pair") }
+                ) { Text("Excluir par de pastas") }
             }
         }
     }
@@ -450,15 +450,15 @@ private fun FolderPickerDialog(
                     }
                 }
                 if (subDirs.isEmpty()) {
-                    item { Text("(no sub-folders)", Modifier.padding(vertical = 12.dp)) }
+                    item { Text("(sem subpastas)", Modifier.padding(vertical = 12.dp)) }
                 }
             }
         },
         confirmButton = {
-            Button(onClick = { onSelect(current.absolutePath) }) { Text("Select this folder") }
+            Button(onClick = { onSelect(current.absolutePath) }) { Text("Selecionar esta pasta") }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text("Cancelar") }
         }
     )
 }
@@ -485,7 +485,7 @@ internal fun RemoteFolderPickerDialog(
             repo.setLocation(ExplorerLocation.Remote(account.id))
             located = true
         } catch (e: Exception) {
-            error = e.message ?: "Cannot open account"
+            error = e.message ?: "Não foi possível abrir a conta"
             loading = false
         }
     }
@@ -496,7 +496,7 @@ internal fun RemoteFolderPickerDialog(
         try {
             folders = repo.list(relDir).filter { it.isDirectory }.sortedBy { it.name.lowercase() }
         } catch (e: Exception) {
-            error = e.message ?: "Cannot list folder"
+            error = e.message ?: "Não foi possível listar a pasta"
             folders = emptyList()
         }
         loading = false
@@ -559,17 +559,17 @@ internal fun RemoteFolderPickerDialog(
                 }
                 if (!loading && error == null && folders.isEmpty()) {
                     item {
-                        val empty = if (relDir.isEmpty()) "(no shares/folders found)" else "(no sub-folders)"
+                        val empty = if (relDir.isEmpty()) "(no shares/folders found)" else "(sem subpastas)"
                         Text(empty, Modifier.padding(vertical = 12.dp))
                     }
                 }
             }
         },
         confirmButton = {
-            Button(onClick = { onSelect(relDir) }) { Text("Select this folder") }
+            Button(onClick = { onSelect(relDir) }) { Text("Selecionar esta pasta") }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text("Cancelar") }
         }
     )
 }

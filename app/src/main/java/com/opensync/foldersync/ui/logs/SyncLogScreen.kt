@@ -61,13 +61,13 @@ fun SyncLogScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Sync log") },
+                title = { Text("Registro de sincronização") },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) { Icon(Icons.Filled.Menu, contentDescription = "Menu") }
                 },
                 actions = {
                     IconButton(onClick = { vm.clear() }) {
-                        Icon(Icons.Filled.DeleteSweep, contentDescription = "Clear log")
+                        Icon(Icons.Filled.DeleteSweep, contentDescription = "Limpar registro")
                     }
                 }
             )
@@ -76,7 +76,7 @@ fun SyncLogScreen(
         if (logs.isEmpty()) {
             Box(Modifier.padding(inner).fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    "No sync runs yet.",
+                    "Nenhuma sincronização realizada ainda.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

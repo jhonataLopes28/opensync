@@ -128,8 +128,8 @@ class WebDavProvider(
         val req = Request.Builder()
             .url(url(fromRel, dir = false))
             .method("MOVE", null)
-            .header("Destination", destination)
-            .header("Overwrite", "T")
+            .header("Destino", destination)
+            .header("Sobrescrever", "T")
             .authed()
             .build()
         client.newCall(req).execute().use { resp ->

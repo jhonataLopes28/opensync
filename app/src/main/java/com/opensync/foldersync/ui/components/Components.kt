@@ -67,7 +67,7 @@ fun <T> DropdownField(
     }
 }
 
-/** Banner prompting the user to grant "All files access" when it is missing. */
+/** Banner prompting the user to grant "Acesso a todos os arquivos" when it is missing. */
 @Composable
 fun StoragePermissionBanner(modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -84,7 +84,7 @@ fun StoragePermissionBanner(modifier: Modifier = Modifier) {
     ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                "Storage permission needed",
+                "Permissão de armazenamento necessária",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
@@ -95,7 +95,7 @@ fun StoragePermissionBanner(modifier: Modifier = Modifier) {
             )
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
                 Button(onClick = { launcher.launch(PermissionUtil.allFilesIntent(context)) }) {
-                    Text("Grant access")
+                    Text("Conceder acesso")
                 }
             }
         }

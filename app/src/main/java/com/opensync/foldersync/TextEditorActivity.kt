@@ -93,7 +93,7 @@ class TextEditorActivity : ComponentActivity() {
                 }
             }
         }
-        return uri.lastPathSegment?.substringAfterLast('/') ?: "Text"
+        return uri.lastPathSegment?.substringAfterLast('/') ?: "Texto"
     }
 
     private suspend fun readText(uri: Uri): String = withContext(Dispatchers.IO) {
@@ -128,7 +128,7 @@ class TextEditorActivity : ComponentActivity() {
         if (accountId < 0 || relPath == null || local == null) return null
         return runCatching {
             val account = Graph.database.accountDao().getById(accountId)
-                ?: throw IllegalStateException("Account not found")
+                ?: throw IllegalStateException("Conta não encontrada")
             ProviderFactory.forAccount(account, "").use { provider ->
                 provider.connect()
                 provider.upload(local, relPath, System.currentTimeMillis())
@@ -203,7 +203,7 @@ private fun TextEditorScreen(
         scope.launch {
             val error = saveNow(md)
             saving = false
-            Toast.makeText(context, error ?: "Saved", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, error ?: "Salvo", Toast.LENGTH_LONG).show()
             if (error == null && leave) onBack()
         }
     }
@@ -220,23 +220,23 @@ private fun TextEditorScreen(
                 title = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 navigationIcon = {
                     IconButton(onClick = { leave() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
                     // Shares the text itself: this file may have arrived as another app's
                     // content:// Uri, which we can't legally re-grant to a third app.
                     IconButton(onClick = { ShareUtil.shareText(context, note.markdown, title) }, enabled = loaded) {
-                        Icon(Icons.Filled.Share, contentDescription = "Share")
+                        Icon(Icons.Filled.Share, contentDescription = "Compartilhar")
                     }
                     IconButton(onClick = { preview = !preview }) {
                         Icon(
                             if (preview) Icons.Filled.Edit else Icons.Filled.Visibility,
-                            contentDescription = if (preview) "Edit" else "Preview"
+                            contentDescription = if (preview) "Editar" else "Visualizar"
                         )
                     }
                     IconButton(onClick = { saveFromUi() }, enabled = loaded && !saving) {
-                        Icon(Icons.Filled.Check, contentDescription = "Save")
+                        Icon(Icons.Filled.Check, contentDescription = "Salvar")
                     }
                 }
             )

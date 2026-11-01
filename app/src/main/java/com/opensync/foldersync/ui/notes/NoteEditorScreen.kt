@@ -204,7 +204,7 @@ fun NoteEditorScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                 RemoteNotes.notifyChanged(savedPath) // a note in an account folder goes up to the server now
                 com.opensync.foldersync.widget.NotesWidgetProvider.notifyChanged(context)
                 com.opensync.foldersync.widget.SingleNoteWidgetProvider.notifyChanged(context)
-                Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Salvo", Toast.LENGTH_SHORT).show()
                 onSaved(savedPath)
             } else {
                 Toast.makeText(context, "Couldn't save note here", Toast.LENGTH_LONG).show()
@@ -224,7 +224,7 @@ fun NoteEditorScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
             TopAppBar(
                 title = {
                     val label = when {
-                        existing == null -> "New note"
+                        existing == null -> "Nova nota"
                         preview -> "Note"
                         else -> "Edit note"
                     }
@@ -232,64 +232,64 @@ fun NoteEditorScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                 },
                 navigationIcon = {
                     IconButton(onClick = { leave() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
                     IconButton(onClick = { shareText() }, enabled = loaded) {
-                        Icon(Icons.Filled.Share, contentDescription = "Share")
+                        Icon(Icons.Filled.Share, contentDescription = "Compartilhar")
                     }
                     if (!preview) {
                         IconButton(onClick = { showFind = !showFind }) {
-                            Icon(Icons.Filled.FindReplace, contentDescription = "Find & replace")
+                            Icon(Icons.Filled.FindReplace, contentDescription = "Localizar e substituir")
                         }
                     }
                     IconButton(onClick = { preview = !preview }) {
                         Icon(
                             if (preview) Icons.Filled.Edit else Icons.Filled.Visibility,
-                            contentDescription = if (preview) "Edit" else "Preview"
+                            contentDescription = if (preview) "Editar" else "Visualizar"
                         )
                     }
                     IconButton(onClick = { save() }, enabled = loaded && !saving) {
-                        Icon(Icons.Filled.Check, contentDescription = "Save")
+                        Icon(Icons.Filled.Check, contentDescription = "Salvar")
                     }
                     // Export / vault / delete / "share the file itself" live in the overflow so the
                     // bar still fits once Share is a first-class action.
                     Box {
                         IconButton(onClick = { overflow = true }) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                            Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
                         }
                         DropdownMenu(expanded = overflow, onDismissRequest = { overflow = false }) {
                             DropdownMenuItem(
-                                text = { Text("Export…") },
+                                text = { Text("Exportar…") },
                                 leadingIcon = { Icon(Icons.Filled.FileDownload, contentDescription = null) },
                                 enabled = loaded,
                                 onClick = { overflow = false; showExport = true }
                             )
                             if (existing != null) {
                                 DropdownMenuItem(
-                                    text = { Text("Share file (.${existing.extension.lowercase()})") },
+                                    text = { Text("Compartilhar arquivo (.${existing.extension.lowercase()})") },
                                     leadingIcon = { Icon(Icons.Filled.Share, contentDescription = null) },
                                     onClick = { overflow = false; ShareUtil.shareFiles(context, listOf(existing)) }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Move to vault") },
+                                    text = { Text("Mover para o cofre") },
                                     leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
                                     onClick = {
                                         overflow = false
                                         when {
                                             !VaultManager.exists() -> Toast.makeText(
-                                                context, "Create a vault first (Vault tab).", Toast.LENGTH_LONG
+                                                context, "Crie um cofre primeiro (aba Cofre).", Toast.LENGTH_LONG
                                             ).show()
                                             !VaultManager.isUnlocked -> Toast.makeText(
-                                                context, "Unlock the vault first (Vault tab).", Toast.LENGTH_LONG
+                                                context, "Desbloqueie o cofre primeiro (aba Cofre).", Toast.LENGTH_LONG
                                             ).show()
                                             else -> showVaultConfirm = true
                                         }
                                     }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Delete note") },
+                                    text = { Text("Excluir nota") },
                                     leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
                                     onClick = { overflow = false; showDeleteConfirm = true }
                                 )
@@ -306,7 +306,7 @@ fun NoteEditorScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Title") },
+                label = { Text("Título") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
             )
@@ -339,13 +339,13 @@ fun NoteEditorScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     extraTools = {
                         IconButton(onClick = { note.insertText("1. ") }) {
-                            Icon(Icons.Filled.FormatListNumbered, contentDescription = "Numbered list")
+                            Icon(Icons.Filled.FormatListNumbered, contentDescription = "Lista numerada")
                         }
                         IconButton(onClick = {
                             val atLineStart = note.selection.min == note.doc.lineStart(note.selection.min)
                             note.insertText((if (atLineStart) "" else "\n") + "| Column 1 | Column 2 |\n| --- | --- |\n| Cell | Cell |\n")
                         }) {
-                            Icon(Icons.Filled.TableChart, contentDescription = "Table")
+                            Icon(Icons.Filled.TableChart, contentDescription = "Tabela")
                         }
                     }
                 )
@@ -362,23 +362,23 @@ fun NoteEditorScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
     if (showDeleteConfirm) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
-            title = { Text("Delete note?") },
-            text = { Text("This note will be permanently deleted.") },
+            title = { Text("Excluir nota?") },
+            text = { Text("Esta nota será excluída permanentemente.") },
             confirmButton = {
-                TextButton(onClick = { showDeleteConfirm = false; deleteNote() }) { Text("Delete") }
+                TextButton(onClick = { showDeleteConfirm = false; deleteNote() }) { Text("Excluir") }
             },
-            dismissButton = { TextButton(onClick = { showDeleteConfirm = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showDeleteConfirm = false }) { Text("Cancelar") } }
         )
     }
     if (showVaultConfirm) {
         AlertDialog(
             onDismissRequest = { showVaultConfirm = false },
-            title = { Text("Move to vault?") },
-            text = { Text("This note will be encrypted into the vault and removed from your notes folder.") },
+            title = { Text("Mover para o cofre?") },
+            text = { Text("Esta nota será criptografada no cofre e removida da pasta de notas.") },
             confirmButton = {
-                TextButton(onClick = { showVaultConfirm = false; vaultNote() }) { Text("Move") }
+                TextButton(onClick = { showVaultConfirm = false; vaultNote() }) { Text("Mover") }
             },
-            dismissButton = { TextButton(onClick = { showVaultConfirm = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showVaultConfirm = false }) { Text("Cancelar") } }
         )
     }
     if (confirmLeave) {
@@ -395,12 +395,12 @@ fun NoteEditorScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
 fun UnsavedChangesDialog(onSave: () -> Unit, onDiscard: () -> Unit, onCancel: () -> Unit) {
     AlertDialog(
         onDismissRequest = onCancel,
-        title = { Text("Save changes?") },
-        text = { Text("This note has changes that haven't been saved.") },
-        confirmButton = { TextButton(onClick = onSave) { Text("Save") } },
+        title = { Text("Salvar alterações?") },
+        text = { Text("Esta nota contém alterações não salvas.") },
+        confirmButton = { TextButton(onClick = onSave) { Text("Salvar") } },
         dismissButton = {
-            TextButton(onClick = onCancel) { Text("Cancel") }
-            TextButton(onClick = onDiscard) { Text("Don't save") }
+            TextButton(onClick = onCancel) { Text("Cancelar") }
+            TextButton(onClick = onDiscard) { Text("Não salvar") }
         }
     )
 }
@@ -419,21 +419,21 @@ private fun FindReplaceBar(
             OutlinedTextField(
                 value = find,
                 onValueChange = onFind,
-                label = { Text("Find") },
+                label = { Text("Localizar") },
                 singleLine = true,
                 modifier = Modifier.weight(1f)
             )
-            TextButton(onClick = onNext) { Text("Next") }
+            TextButton(onClick = onNext) { Text("Avançar") }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
                 value = replace,
                 onValueChange = onReplace,
-                label = { Text("Replace with") },
+                label = { Text("Substituir por") },
                 singleLine = true,
                 modifier = Modifier.weight(1f)
             )
-            TextButton(onClick = onReplaceAll) { Text("All") }
+            TextButton(onClick = onReplaceAll) { Text("Todos") }
         }
     }
 }

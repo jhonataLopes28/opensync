@@ -109,7 +109,7 @@ class GalleryRepository(private val context: Context) {
             while (c.moveToNext()) {
                 val id = c.getLong(idCol)
                 val bId = if (bIdCol >= 0 && !c.isNull(bIdCol)) c.getString(bIdCol) else "0"
-                val bName = if (bNameCol >= 0 && !c.isNull(bNameCol)) c.getString(bNameCol) else "Device"
+                val bName = if (bNameCol >= 0 && !c.isNull(bNameCol)) c.getString(bNameCol) else "Dispositivo"
                 val filePath = if (dataCol >= 0 && !c.isNull(dataCol)) c.getString(dataCol) else ""
                 val size = if (sizeCol >= 0 && !c.isNull(sizeCol)) c.getLong(sizeCol) else 0L
                 out += Row(

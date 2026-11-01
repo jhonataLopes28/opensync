@@ -139,7 +139,7 @@ object VaultManager {
      * couldn't be deleted, so the caller can warn the user.
      */
     fun importFile(uri: Uri, dir: String = ""): ImportResult {
-        val key = masterKey ?: error("Vault is locked")
+        val key = masterKey ?: error("O cofre está bloqueado")
         blobsDir.mkdirs()
         val name = queryName(uri)
         val mime = ctx.contentResolver.getType(uri) ?: guessMime(name)
@@ -199,7 +199,7 @@ object VaultManager {
 
     /** Decrypt an entry straight to a caller-provided stream (e.g. an export target). */
     fun exportTo(entry: VaultEntry, out: OutputStream) {
-        val key = masterKey ?: error("Vault is locked")
+        val key = masterKey ?: error("O cofre está bloqueado")
         File(blobsDir, entry.id).inputStream().use { input -> VaultCrypto.decryptStream(key, input, out) }
     }
 
@@ -208,7 +208,7 @@ object VaultManager {
      * media viewer's folder-swipe can't wander into other decrypted vault files. Cache is wiped on lock.
      */
     fun decryptToCache(entry: VaultEntry): File {
-        val key = masterKey ?: error("Vault is locked")
+        val key = masterKey ?: error("O cofre está bloqueado")
         val safe = entry.name.replace(Regex("[^A-Za-z0-9._-]"), "_").ifBlank { "file" }
         val dir = File(openCacheDir, entry.id).apply { mkdirs() }
         val out = File(dir, safe)
@@ -262,7 +262,7 @@ object VaultManager {
     }
 
     private fun writeIndex(entries: List<VaultEntry>, folders: Set<String>) {
-        val key = masterKey ?: error("Vault is locked")
+        val key = masterKey ?: error("O cofre está bloqueado")
         val arr = JSONArray()
         entries.forEach { e ->
             arr.put(

@@ -78,7 +78,7 @@ private fun ChooseNoteScreen(onPick: (String) -> Unit, onCancel: () -> Unit) {
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Choose a note") }) }
+        topBar = { TopAppBar(title = { Text("Escolha uma nota") }) }
     ) { inner ->
         if (notes.isEmpty()) {
             Column(Modifier.padding(inner).fillMaxSize().padding(24.dp)) {

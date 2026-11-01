@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 enum class SyncDirection(val label: String) {
     TO_REMOTE("To remote (upload)"),
     FROM_REMOTE("From remote (download)"),
-    TWO_WAY("Two-way")
+    TWO_WAY("Duas vias")
 }
 
 enum class ConflictRule(val label: String) {

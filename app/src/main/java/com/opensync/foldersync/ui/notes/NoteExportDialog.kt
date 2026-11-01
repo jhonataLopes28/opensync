@@ -42,7 +42,7 @@ import java.io.File
 /** What to export: read at the moment the user acts, so unsaved edits go out too. */
 class ExportSource(val title: String, val markdown: String, val baseDir: File?)
 
-/** "Save to…" with the MIME type and file name chosen per export, which the stock contract can't do. */
+/** "Salvar em…" with the MIME type and file name chosen per export, which the stock contract can't do. */
 private object CreateTypedDocument : ActivityResultContract<Pair<String, String>, Uri?>() {
     override fun createIntent(context: Context, input: Pair<String, String>) =
         Intent(Intent.ACTION_CREATE_DOCUMENT)
@@ -64,7 +64,7 @@ fun NoteExportDialog(source: () -> ExportSource, onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
     var format by rememberSaveable { mutableStateOf(ExportFormat.PDF) }
     var busy by remember { mutableStateOf(false) }
-    // Captured when "Save to…" is pressed, so what's written is what was on screen then.
+    // Captured when "Salvar em…" is pressed, so what's written is what was on screen then.
     var pending by remember { mutableStateOf<ExportSource?>(null) }
 
     val saveLauncher = rememberLauncherForActivityResult(CreateTypedDocument) { uri ->
@@ -80,14 +80,14 @@ fun NoteExportDialog(source: () -> ExportSource, onDismiss: () -> Unit) {
                 }
             }.isSuccess
             busy = false
-            Toast.makeText(context, if (ok) "Exported as ${format.label}" else "Couldn't export this note", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, if (ok) "Exported as ${format.label}" else "Não foi possível exportar esta nota", Toast.LENGTH_LONG).show()
             if (ok) onDismiss()
         }
     }
 
     AlertDialog(
         onDismissRequest = { if (!busy) onDismiss() },
-        title = { Text("Export note") },
+        title = { Text("Exportar nota") },
         text = {
             Column(Modifier.selectableGroup()) {
                 ExportFormat.entries.forEach { f ->
@@ -103,7 +103,7 @@ fun NoteExportDialog(source: () -> ExportSource, onDismiss: () -> Unit) {
                         Text(".${f.ext}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-                if (busy) Text("Exporting…", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp))
+                if (busy) Text("Exportando…", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp))
             }
         },
         confirmButton = {
@@ -118,14 +118,14 @@ fun NoteExportDialog(source: () -> ExportSource, onDismiss: () -> Unit) {
                         }.getOrNull()
                         busy = false
                         if (file == null) {
-                            Toast.makeText(context, "Couldn't export this note", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Não foi possível exportar esta nota", Toast.LENGTH_LONG).show()
                         } else {
                             ShareUtil.shareFiles(context, listOf(file))
                             onDismiss()
                         }
                     }
                 }
-            ) { Text("Share") }
+            ) { Text("Compartilhar") }
         },
         dismissButton = {
             TextButton(
@@ -138,10 +138,10 @@ fun NoteExportDialog(source: () -> ExportSource, onDismiss: () -> Unit) {
                         .onFailure {
                             pending = null
                             busy = false
-                            Toast.makeText(context, "No app here can save files", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Nenhum aplicativo disponível pode salvar arquivos", Toast.LENGTH_LONG).show()
                         }
                 }
-            ) { Text("Save to…") }
+            ) { Text("Salvar em…") }
         }
     )
 }

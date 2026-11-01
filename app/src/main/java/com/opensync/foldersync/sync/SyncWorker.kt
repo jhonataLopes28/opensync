@@ -23,11 +23,11 @@ class SyncWorker(
         if (pairId < 0) return Result.failure()
 
         val notifId = Notifications.PROGRESS_ID_BASE + pairId.toInt()
-        runCatching { setForeground(foregroundInfo(notifId, "Preparing…", 0, 0, true)) }
+        runCatching { setForeground(foregroundInfo(notifId, "Preparando…", 0, 0, true)) }
 
         val progress = SyncEngine.Progress { message, done, total ->
             val notif = Notifications.progress(
-                applicationContext, "Syncing", message, total == 0, total, done
+                applicationContext, "Sincronizando", message, total == 0, total, done
             )
             runCatching { NotificationManagerCompat.from(applicationContext).notify(notifId, notif) }
         }
@@ -58,7 +58,7 @@ class SyncWorker(
     private fun foregroundInfo(
         notifId: Int, text: String, done: Int, total: Int, indeterminate: Boolean
     ): ForegroundInfo {
-        val notif = Notifications.progress(applicationContext, "Syncing", text, indeterminate, total, done)
+        val notif = Notifications.progress(applicationContext, "Sincronizando", text, indeterminate, total, done)
         return if (Build.VERSION.SDK_INT >= 34) {
             ForegroundInfo(notifId, notif, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         } else {

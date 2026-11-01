@@ -65,7 +65,7 @@ object OneDriveAuth {
             client.newCall(req).execute().use { resp ->
                 val body = resp.body?.string() ?: ""
                 if (!resp.isSuccessful) {
-                    error.value = "Token exchange failed (${resp.code})"
+                    error.value = "Falha ao trocar token (${resp.code})"
                     return@withContext
                 }
                 val rt = JSONObject(body).optString("refresh_token")

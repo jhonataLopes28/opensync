@@ -242,11 +242,11 @@ private fun scaledFilter(f: GfxColorMatrix, strength: Float): GfxColorMatrix {
 @Composable
 internal fun AdjustPanel(edits: ColorEdits, onChange: (ColorEdits) -> Unit) {
     Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-        AdjustSlider("Brightness", edits.brightness) { onChange(edits.copy(brightness = it)) }
-        AdjustSlider("Contrast", edits.contrast) { onChange(edits.copy(contrast = it)) }
-        AdjustSlider("Saturation", edits.saturation) { onChange(edits.copy(saturation = it)) }
-        AdjustSlider("Warmth", edits.warmth) { onChange(edits.copy(warmth = it)) }
-        AdjustSlider("Tint", edits.tint) { onChange(edits.copy(tint = it)) }
+        AdjustSlider("Brilho", edits.brightness) { onChange(edits.copy(brightness = it)) }
+        AdjustSlider("Contraste", edits.contrast) { onChange(edits.copy(contrast = it)) }
+        AdjustSlider("Saturação", edits.saturation) { onChange(edits.copy(saturation = it)) }
+        AdjustSlider("Temperatura", edits.warmth) { onChange(edits.copy(warmth = it)) }
+        AdjustSlider("Matiz", edits.tint) { onChange(edits.copy(tint = it)) }
     }
 }
 
@@ -279,7 +279,7 @@ internal fun FilterPanel(
         FilterThumbnails(thumb, selected, onSelect)
         if (selected != 0) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text("Intensity", color = Color(0xFFDDDDDD), fontSize = 13.sp, modifier = Modifier.width(90.dp))
+                Text("Intensidade", color = Color(0xFFDDDDDD), fontSize = 13.sp, modifier = Modifier.width(90.dp))
                 Slider(value = strength, onValueChange = onStrength, valueRange = 0f..1f, modifier = Modifier.weight(1f))
                 Text("${(strength * 100).toInt()}", color = Color(0xFF999999), fontSize = 12.sp, modifier = Modifier.width(36.dp))
             }
@@ -350,7 +350,7 @@ internal fun CropPanel(
     Column(Modifier.fillMaxWidth()) {
         // Straighten
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("Straighten", color = Color(0xFFDDDDDD), fontSize = 13.sp, modifier = Modifier.width(90.dp))
+            Text("Endireitar", color = Color(0xFFDDDDDD), fontSize = 13.sp, modifier = Modifier.width(90.dp))
             Slider(value = straighten, onValueChange = onStraighten, valueRange = -45f..45f, modifier = Modifier.weight(1f))
             Text("${straighten.toInt()}°", color = Color(0xFF999999), fontSize = 12.sp, modifier = Modifier.width(36.dp))
         }

@@ -22,7 +22,7 @@ data class Album(
 )
 
 enum class AlbumSort(val label: String) {
-    NAME("Name"),
+    NAME("Nome"),
     COUNT("Item count"),
     DATE("Most recent")
 }

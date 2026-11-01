@@ -141,7 +141,7 @@ class SyncEngine(
         val total = src.files.size
         var idx = 0
         for ((rel, sf) in src.files) {
-            if (isCancelled()) throw InterruptedException("Sync cancelled")
+            if (isCancelled()) throw InterruptedException("Sincronização cancelada")
             idx++
             val df = dst.files[rel]
             if (df == null || differs(sf, df)) {
@@ -192,7 +192,7 @@ class SyncEngine(
         var idx = 0
 
         for (rel in allPaths) {
-            if (isCancelled()) throw InterruptedException("Sync cancelled")
+            if (isCancelled()) throw InterruptedException("Sincronização cancelada")
             idx++
             val l = localScan.files[rel]
             val r = remoteScan.files[rel]

@@ -259,21 +259,21 @@ private fun DrawerContent(currentRoute: String?, onNavigate: (String) -> Unit) {
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(24.dp)
             )
-            SectionLabel("Browse")
-            DrawerRow("files", "Files", Icons.Filled.Folder, currentRoute, onNavigate)
-            DrawerRow("gallery", "Gallery", Icons.Filled.PhotoLibrary, currentRoute, onNavigate)
-            DrawerRow("notes", "Notes", Icons.Filled.Description, currentRoute, onNavigate)
-            DrawerRow("vault", "Vault", Icons.Filled.Lock, currentRoute, onNavigate)
+            SectionLabel("Procurar")
+            DrawerRow("files", "Arquivos", Icons.Filled.Folder, currentRoute, onNavigate)
+            DrawerRow("gallery", "Galeria", Icons.Filled.PhotoLibrary, currentRoute, onNavigate)
+            DrawerRow("notes", "Notas", Icons.Filled.Description, currentRoute, onNavigate)
+            DrawerRow("vault", "Cofre", Icons.Filled.Lock, currentRoute, onNavigate)
 
             HorizontalDivider(Modifier.padding(vertical = 8.dp))
             SectionLabel("Backup")
-            DrawerRow("pairs", "Folder pairs", Icons.Filled.Sync, currentRoute, onNavigate)
-            DrawerRow("logs", "Sync log", Icons.Filled.History, currentRoute, onNavigate)
+            DrawerRow("pairs", "Pares de pastas", Icons.Filled.Sync, currentRoute, onNavigate)
+            DrawerRow("logs", "Registro de sincronização", Icons.Filled.History, currentRoute, onNavigate)
 
             HorizontalDivider(Modifier.padding(vertical = 8.dp))
-            SectionLabel("Manage")
-            DrawerRow("accounts", "Accounts", Icons.Filled.Cloud, currentRoute, onNavigate)
-            DrawerRow("settings", "Settings", Icons.Filled.Settings, currentRoute, onNavigate)
+            SectionLabel("Gerenciar")
+            DrawerRow("accounts", "Contas", Icons.Filled.Cloud, currentRoute, onNavigate)
+            DrawerRow("settings", "Configurações", Icons.Filled.Settings, currentRoute, onNavigate)
         }
     }
 }

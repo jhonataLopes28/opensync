@@ -172,7 +172,7 @@ fun ExplorerScreen(
         floatingActionButton = {
             if (!state.inSelectionMode) {
                 FloatingActionButton(onClick = { showNewFolder = true }) {
-                    Icon(Icons.Filled.CreateNewFolder, contentDescription = "New folder")
+                    Icon(Icons.Filled.CreateNewFolder, contentDescription = "Nova pasta")
                 }
             }
         }
@@ -184,8 +184,8 @@ fun ExplorerScreen(
 
             if (state.hasClipboard) {
                 ActionBar(
-                    text = "Clipboard ready",
-                    confirmLabel = "Paste here",
+                    text = "Área de transferência pronta",
+                    confirmLabel = "Colar aqui",
                     onConfirm = vm::paste,
                     onCancel = vm::clearClipboard
                 )
@@ -193,7 +193,7 @@ fun ExplorerScreen(
             if (state.pendingShareCount > 0) {
                 ActionBar(
                     text = "Save ${state.pendingShareCount} shared file(s) here",
-                    confirmLabel = "Save",
+                    confirmLabel = "Salvar",
                     onConfirm = vm::saveShared,
                     onCancel = vm::cancelShare
                 )
@@ -212,7 +212,7 @@ fun ExplorerScreen(
 
             if (state.entries.isEmpty() && !state.loading) {
                 Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text("Empty folder", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Pasta vazia", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
                 LazyColumn(Modifier.weight(1f).verticalScrollbar(listState), state = listState) {
@@ -233,18 +233,18 @@ fun ExplorerScreen(
 
     if (showNewFolder) {
         TextInputDialog(
-            title = "New folder",
+            title = "Nova pasta",
             initial = "",
-            confirmLabel = "Create",
+            confirmLabel = "Criar",
             onDismiss = { showNewFolder = false },
             onConfirm = { name -> vm.newFolder(name); showNewFolder = false }
         )
     }
     renameTarget?.let { target ->
         TextInputDialog(
-            title = "Rename",
+            title = "Renomear",
             initial = target.name,
-            confirmLabel = "Rename",
+            confirmLabel = "Renomear",
             onDismiss = { renameTarget = null },
             onConfirm = { name -> vm.rename(target, name); renameTarget = null }
         )
@@ -269,23 +269,23 @@ fun ExplorerScreen(
     if (showDeleteConfirm) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
-            title = { Text("Delete ${state.selection.size} item(s)?") },
-            text = { Text("This cannot be undone.") },
+            title = { Text("Excluir ${state.selection.size} item(ns)?") },
+            text = { Text("Esta ação não pode ser desfeita.") },
             confirmButton = {
-                TextButton(onClick = { showDeleteConfirm = false; vm.deleteSelected() }) { Text("Delete") }
+                TextButton(onClick = { showDeleteConfirm = false; vm.deleteSelected() }) { Text("Excluir") }
             },
-            dismissButton = { TextButton(onClick = { showDeleteConfirm = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showDeleteConfirm = false }) { Text("Cancelar") } }
         )
     }
     if (showVaultConfirm) {
         AlertDialog(
             onDismissRequest = { showVaultConfirm = false },
-            title = { Text("Move to vault?") },
+            title = { Text("Mover para o cofre?") },
             text = { Text("${state.selection.size} item(s) will be encrypted into the vault and removed from here. (Folders are skipped.)") },
             confirmButton = {
-                TextButton(onClick = { showVaultConfirm = false; vm.moveSelectedToVault() }) { Text("Move") }
+                TextButton(onClick = { showVaultConfirm = false; vm.moveSelectedToVault() }) { Text("Mover") }
             },
-            dismissButton = { TextButton(onClick = { showVaultConfirm = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showVaultConfirm = false }) { Text("Cancelar") } }
         )
     }
 }
@@ -322,7 +322,7 @@ private fun ExplorerTopBar(
         actions = {
             Box {
                 IconButton(onClick = { sortOpen = true }) {
-                    Icon(Icons.Filled.Sort, contentDescription = "Sort")
+                    Icon(Icons.Filled.Sort, contentDescription = "Ordenar")
                 }
                 DropdownMenu(expanded = sortOpen, onDismissRequest = { sortOpen = false }) {
                     SortBy.entries.forEach { s ->
@@ -333,16 +333,16 @@ private fun ExplorerTopBar(
             }
             Box {
                 IconButton(onClick = { overflowOpen = true }) {
-                    Icon(Icons.Filled.SelectAll, contentDescription = "More")
+                    Icon(Icons.Filled.SelectAll, contentDescription = "Mais opções")
                 }
                 DropdownMenu(expanded = overflowOpen, onDismissRequest = { overflowOpen = false }) {
-                    DropdownMenuItem(text = { Text("Select all") }, onClick = { onSelectAll(); overflowOpen = false })
+                    DropdownMenuItem(text = { Text("Selecionar tudo") }, onClick = { onSelectAll(); overflowOpen = false })
                     DropdownMenuItem(
-                        text = { Text(if (state.showHidden) "Hide hidden files" else "Show hidden files") },
+                        text = { Text(if (state.showHidden) "Ocultar arquivos ocultos" else "Mostrar arquivos ocultos") },
                         onClick = { onToggleHidden(); overflowOpen = false }
                     )
                     DropdownMenuItem(
-                        text = { Text("Refresh") },
+                        text = { Text("Atualizar") },
                         leadingIcon = { Icon(Icons.Filled.Refresh, contentDescription = null) },
                         onClick = { onRefresh(); overflowOpen = false }
                     )
@@ -369,38 +369,38 @@ private fun SelectionBar(
 ) {
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Cancel") }
+            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Cancelar") }
         },
-        title = { Text("$count selected") },
+        title = { Text("$count selecionado(s)") },
         actions = {
             // Keep the primary actions as icons; overflow the rest so nothing gets clipped off-screen.
-            IconButton(onClick = onShare) { Icon(Icons.Filled.Share, contentDescription = "Share") }
-            IconButton(onClick = onCopy) { Icon(Icons.Filled.ContentCopy, contentDescription = "Copy") }
-            IconButton(onClick = onCut) { Icon(Icons.Filled.ContentCut, contentDescription = "Cut") }
-            IconButton(onClick = onDelete) { Icon(Icons.Filled.Delete, contentDescription = "Delete") }
+            IconButton(onClick = onShare) { Icon(Icons.Filled.Share, contentDescription = "Compartilhar") }
+            IconButton(onClick = onCopy) { Icon(Icons.Filled.ContentCopy, contentDescription = "Copiar") }
+            IconButton(onClick = onCut) { Icon(Icons.Filled.ContentCut, contentDescription = "Recortar") }
+            IconButton(onClick = onDelete) { Icon(Icons.Filled.Delete, contentDescription = "Excluir") }
             Box {
                 var overflow by remember { mutableStateOf(false) }
                 IconButton(onClick = { overflow = true }) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                    Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
                 }
                 DropdownMenu(expanded = overflow, onDismissRequest = { overflow = false }) {
                     DropdownMenuItem(
-                        text = { Text("Move to vault") },
+                        text = { Text("Mover para o cofre") },
                         leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
                         onClick = { overflow = false; onMoveToVault() }
                     )
                     if (canRename) {
                         DropdownMenuItem(
-                            text = { Text("Details") },
+                            text = { Text("Detalhes") },
                             onClick = { overflow = false; onDetails() }
                         )
                         DropdownMenuItem(
-                            text = { Text("Rename") },
+                            text = { Text("Renomear") },
                             onClick = { overflow = false; onRename() }
                         )
                     }
                     DropdownMenuItem(
-                        text = { Text("Select all") },
+                        text = { Text("Selecionar tudo") },
                         onClick = { overflow = false; onSelectAll() }
                     )
                 }
@@ -422,12 +422,12 @@ private fun LocationSelector(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleLarge)
-            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Change location")
+            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Alterar local")
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             DropdownMenuItem(
-                text = { Text("Internal storage") },
-                onClick = { onPick(ExplorerLocation.LocalRoot, "Internal storage"); expanded = false }
+                text = { Text("Armazenamento interno") },
+                onClick = { onPick(ExplorerLocation.LocalRoot, "Armazenamento interno"); expanded = false }
             )
             accounts.forEach { acc ->
                 DropdownMenuItem(
@@ -464,7 +464,7 @@ private fun ActionBar(text: String, confirmLabel: String, onConfirm: () -> Unit,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(text, Modifier.weight(1f), color = MaterialTheme.colorScheme.onSecondaryContainer)
-            OutlinedButton(onClick = onCancel) { Text("Cancel") }
+            OutlinedButton(onClick = onCancel) { Text("Cancelar") }
             TextButton(onClick = onConfirm) { Text(confirmLabel) }
         }
     }
@@ -546,7 +546,7 @@ private fun TextInputDialog(
                 Text(confirmLabel)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
@@ -584,8 +584,8 @@ private val OPEN_TEXT_EXTS =
 
 /**
  * Opens a file tapped in OpenSync's own explorer. Types OpenSync handles (images, video, PDF, text)
- * go straight to the built-in viewers — no "Open with" chooser, ever. Anything else is handed to the
- * system with a plain ACTION_VIEW so Android's normal default applies (and remembers an "Always" pick).
+ * go straight to the built-in viewers — no "Abrir com" chooser, ever. Anything else is handed to the
+ * system with a plain ACTION_VIEW so Android's normal default applies (and remembers an "Sempre" pick).
  */
 private fun openFile(context: android.content.Context, opened: OpenedFile, onOpenPdf: (String) -> Unit) {
     val file = opened.file
@@ -614,7 +614,7 @@ private fun launchInternal(
     try {
         context.startActivity(Intent(context, cls).putExtra(pathExtra, file.absolutePath).apply(extras))
     } catch (e: Exception) {
-        Toast.makeText(context, "Couldn't open this file", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Não foi possível abrir este arquivo", Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -630,6 +630,6 @@ private fun openWithSystem(context: android.content.Context, file: File) {
         // No createChooser(): a plain ACTION_VIEW lets Android use (and remember) the user's default.
         context.startActivity(intent)
     } catch (e: Exception) {
-        Toast.makeText(context, "No app can open this file", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Nenhum aplicativo pode abrir este arquivo", Toast.LENGTH_SHORT).show()
     }
 }

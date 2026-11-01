@@ -93,14 +93,14 @@ fun PdfViewerScreen(
 
     DisposableEffect(path) {
         if (path == null) {
-            error = "No file to open"
+            error = "Nenhum arquivo para abrir"
         } else {
             try {
                 val opened = PdfDoc.open(File(path))
                 doc = opened
                 pageCount = opened.pageCount
             } catch (e: Exception) {
-                error = e.message ?: "Cannot open this PDF"
+                error = e.message ?: "Não foi possível abrir este PDF"
             }
         }
         onDispose { doc?.close() }
@@ -118,7 +118,7 @@ fun PdfViewerScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
@@ -130,18 +130,18 @@ fun PdfViewerScreen(
                     }
                     Box {
                         IconButton(onClick = { menuOpen = true }) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                            Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
                         }
                         DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
                             DropdownMenuItem(
-                                text = { Text("Share") },
+                                text = { Text("Compartilhar") },
                                 onClick = {
                                     menuOpen = false
                                     path?.let { ShareUtil.shareFiles(context, listOf(File(it))) }
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Annotate") },
+                                text = { Text("Anotar") },
                                 onClick = { menuOpen = false; onAnnotate() }
                             )
                             DropdownMenuItem(
@@ -149,11 +149,11 @@ fun PdfViewerScreen(
                                 onClick = { menuOpen = false; onSign() }
                             )
                             DropdownMenuItem(
-                                text = { Text("Fill form") },
+                                text = { Text("Preencher formulário") },
                                 onClick = { menuOpen = false; onFillForm() }
                             )
                             DropdownMenuItem(
-                                text = { Text("Organize pages") },
+                                text = { Text("Organizar páginas") },
                                 onClick = { menuOpen = false; onEditPages() }
                             )
                         }

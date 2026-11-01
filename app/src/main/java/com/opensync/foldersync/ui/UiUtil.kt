@@ -16,5 +16,5 @@ fun formatBytes(bytes: Long): String {
 }
 
 fun formatTimestamp(time: Long): String =
-    if (time <= 0) "Never"
+    if (time <= 0) "Nunca"
     else SimpleDateFormat("MMM d, yyyy HH:mm", Locale.getDefault()).format(Date(time))

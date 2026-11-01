@@ -275,7 +275,7 @@ class RichNoteState(initialMarkdown: String = "") {
 fun RichNoteEditor(
     state: RichNoteState,
     modifier: Modifier = Modifier,
-    placeholder: String = "Write your note…",
+    placeholder: String = "Escreva sua nota…",
     extraTools: @Composable RowScope.() -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -283,20 +283,20 @@ fun RichNoteEditor(
 
     Column(modifier) {
         Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
-            Tool(Icons.AutoMirrored.Filled.Undo, "Undo", enabled = state.canUndo) { state.undo() }
+            Tool(Icons.AutoMirrored.Filled.Undo, "Desfazer", enabled = state.canUndo) { state.undo() }
             Tool(Icons.AutoMirrored.Filled.Redo, "Redo", enabled = state.canRedo) { state.redo() }
-            Tool(Icons.Filled.Title, "Heading", active = state.headingLevel > 0) { state.cycleHeading() }
+            Tool(Icons.Filled.Title, "Título", active = state.headingLevel > 0) { state.cycleHeading() }
             Tool(Icons.Filled.FormatBold, "Bold", active = state.isActive(Style.BOLD)) { state.toggle(Style.BOLD) }
-            Tool(Icons.Filled.FormatItalic, "Italic", active = state.isActive(Style.ITALIC)) { state.toggle(Style.ITALIC) }
-            Tool(Icons.Filled.FormatStrikethrough, "Strikethrough", active = state.isActive(Style.STRIKE)) { state.toggle(Style.STRIKE) }
+            Tool(Icons.Filled.FormatItalic, "Itálico", active = state.isActive(Style.ITALIC)) { state.toggle(Style.ITALIC) }
+            Tool(Icons.Filled.FormatStrikethrough, "Tachado", active = state.isActive(Style.STRIKE)) { state.toggle(Style.STRIKE) }
             Tool(Icons.Filled.Code, "Code", active = state.isActive(Style.CODE)) { state.toggle(Style.CODE) }
-            Tool(Icons.Filled.FormatListBulleted, "Bullet list", active = state.hasGlyph(BULLET)) { state.toggleGlyph(BULLET) }
-            Tool(Icons.Filled.CheckBox, "Checklist", active = state.hasGlyph(TODO) || state.hasGlyph(DONE)) { state.toggleGlyph(TODO) }
+            Tool(Icons.Filled.FormatListBulleted, "Lista com marcadores", active = state.hasGlyph(BULLET)) { state.toggleGlyph(BULLET) }
+            Tool(Icons.Filled.CheckBox, "Lista de tarefas", active = state.hasGlyph(TODO) || state.hasGlyph(DONE)) { state.toggleGlyph(TODO) }
             Tool(Icons.Filled.FormatQuote, "Quote", active = state.isQuote) { state.toggleQuote() }
             Tool(Icons.Filled.Link, "Link", active = state.linkAt() != null) {
                 val link = state.linkAt()
                 if (link == null && state.selection.collapsed) {
-                    Toast.makeText(context, "Select the text to link first", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Selecione primeiro o texto para criar o link", Toast.LENGTH_SHORT).show()
                 } else linkDialog = link?.url ?: ""
             }
             extraTools()
@@ -308,18 +308,18 @@ fun RichNoteEditor(
         var url by remember(initial) { mutableStateOf(initial) }
         AlertDialog(
             onDismissRequest = { linkDialog = null },
-            title = { Text(if (initial.isEmpty()) "Add link" else "Edit link") },
+            title = { Text(if (initial.isEmpty()) "Adicionar link" else "Editar link") },
             text = {
                 OutlinedTextField(value = url, onValueChange = { url = it }, label = { Text("URL") }, singleLine = true)
             },
             confirmButton = {
-                TextButton(onClick = { linkDialog = null; if (url.isNotBlank()) state.setLink(url.trim()) }) { Text("Save") }
+                TextButton(onClick = { linkDialog = null; if (url.isNotBlank()) state.setLink(url.trim()) }) { Text("Salvar") }
             },
             dismissButton = {
                 if (initial.isNotEmpty()) {
-                    TextButton(onClick = { linkDialog = null; state.setLink(null) }) { Text("Remove") }
+                    TextButton(onClick = { linkDialog = null; state.setLink(null) }) { Text("Remover") }
                 } else {
-                    TextButton(onClick = { linkDialog = null }) { Text("Cancel") }
+                    TextButton(onClick = { linkDialog = null }) { Text("Cancelar") }
                 }
             }
         )

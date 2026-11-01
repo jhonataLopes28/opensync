@@ -88,7 +88,7 @@ private data class Edits(
         get() = color.modified || rotation != 0 || flipH || flipV || straighten != 0f || !crop.isFull
 }
 
-private enum class Tool(val label: String) { ADJUST("Light & colour"), FILTERS("Filters"), CROP("Crop") }
+private enum class Tool(val label: String) { ADJUST("Light & colour"), FILTERS("Filtros"), CROP("Cortar") }
 
 @Composable
 private fun PhotoEditorScreen(uri: Uri, onClose: () -> Unit) {
@@ -128,10 +128,10 @@ private fun PhotoEditorScreen(uri: Uri, onClose: () -> Unit) {
             }
             saving = false
             result.onSuccess {
-                Toast.makeText(context, if (overwrite) "Saved" else "Saved a copy", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, if (overwrite) "Salvo" else "Saved a copy", Toast.LENGTH_SHORT).show()
                 onClose()
             }.onFailure {
-                Toast.makeText(context, "Couldn't save: ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Não foi possível salvar: ${it.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -143,15 +143,15 @@ private fun PhotoEditorScreen(uri: Uri, onClose: () -> Unit) {
             Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, "Close", tint = Color.White) }
+            IconButton(onClick = onClose) { Icon(Icons.Filled.Close, "Fechar", tint = Color.White) }
             Spacer(Modifier.weight(1f))
             IconButton(onClick = { edits = Edits() }, enabled = edits.modified) {
-                Icon(Icons.Filled.Refresh, "Reset", tint = if (edits.modified) Color.White else Color.Gray)
+                Icon(Icons.Filled.Refresh, "Redefinir", tint = if (edits.modified) Color.White else Color.Gray)
             }
             TextButton(onClick = { showSave = true }, enabled = edits.modified && !saving) {
                 Icon(Icons.Filled.Save, null, tint = if (edits.modified) Color.White else Color.Gray)
                 Spacer(Modifier.width(6.dp))
-                Text("Save", color = if (edits.modified) Color.White else Color.Gray)
+                Text("Salvar", color = if (edits.modified) Color.White else Color.Gray)
             }
         }
 
@@ -220,10 +220,10 @@ private fun PhotoEditorScreen(uri: Uri, onClose: () -> Unit) {
     if (showSave) {
         AlertDialog(
             onDismissRequest = { showSave = false },
-            title = { Text("Save edited photo") },
-            text = { Text("Overwrite the original, or keep it and save a copy?") },
-            confirmButton = { TextButton(onClick = { save(false) }) { Text("Save copy") } },
-            dismissButton = { TextButton(onClick = { save(true) }) { Text("Overwrite") } }
+            title = { Text("Salvar foto editada") },
+            text = { Text("Deseja substituir o original ou mantê-lo e salvar uma cópia?") },
+            confirmButton = { TextButton(onClick = { save(false) }) { Text("Salvar cópia") } },
+            dismissButton = { TextButton(onClick = { save(true) }) { Text("Sobrescrever") } }
         )
     }
 }
@@ -308,7 +308,7 @@ private fun renderAndSave(context: android.content.Context, uri: Uri, edits: Edi
             val srcFile = uri.takeIf { it.scheme == "file" }?.path?.let { File(it) }
             val dir = srcFile?.parentFile
                 ?: File(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PICTURES), "OpenSync").apply { mkdirs() }
-            val baseName = srcFile?.nameWithoutExtension ?: "photo"
+            val baseName = srcFile?.nameWithoutExtension ?: "foto"
             val f = uniqueFile(dir, "${baseName}_edited", "jpg")
             FileOutputStream(f).use { out.compress(Bitmap.CompressFormat.JPEG, 95, it) }
             scanFile(context, f)

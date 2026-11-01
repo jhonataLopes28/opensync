@@ -57,7 +57,7 @@ fun AccountsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Accounts") },
+                title = { Text("Contas") },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) { Icon(Icons.Filled.Menu, contentDescription = "Menu") }
                 }
@@ -65,14 +65,14 @@ fun AccountsScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAdd) {
-                Icon(Icons.Filled.Add, contentDescription = "Add account")
+                Icon(Icons.Filled.Add, contentDescription = "Adicionar conta")
             }
         }
     ) { inner ->
         if (accounts.isEmpty()) {
             Box(Modifier.padding(inner).fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    "No accounts yet.\nAdd an FTP, SFTP or WebDAV server.",
+                    "Nenhuma conta ainda.\nAdicione um servidor FTP, SFTP ou WebDAV.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

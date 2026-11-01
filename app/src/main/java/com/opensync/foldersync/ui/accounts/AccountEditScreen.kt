@@ -187,17 +187,17 @@ fun AccountEditScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (account.id == 0L) "New account" else "Edit account") },
+                title = { Text(if (account.id == 0L) "Nova conta" else "Editar conta") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
                     TextButton(
                         onClick = { vm.save(onBack) },
                         enabled = account.name.isNotBlank()
-                    ) { Text("Save") }
+                    ) { Text("Salvar") }
                 }
             )
         }
@@ -214,13 +214,13 @@ fun AccountEditScreen(
             OutlinedTextField(
                 value = account.name,
                 onValueChange = { v -> vm.update { it.copy(name = v) } },
-                label = { Text("Name") },
+                label = { Text("Nome") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
             DropdownField(
-                label = "Type",
+                label = "Tipo",
                 options = AccountType.entries,
                 selected = type,
                 optionLabel = { it.label },
@@ -274,10 +274,10 @@ fun AccountEditScreen(
                     label = {
                         Text(
                             when (type) {
-                                AccountType.WEBDAV -> "Server URL (https://host/path)"
-                                AccountType.SMB -> "Server (IP or hostname)"
-                                AccountType.S3 -> "Endpoint (e.g. s3.us-west-002.backblazeb2.com)"
-                                else -> "Host"
+                                AccountType.WEBDAV -> "URL do servidor (https://host/caminho)"
+                                AccountType.SMB -> "Servidor (IP ou nome do host)"
+                                AccountType.S3 -> "Endpoint (ex.: s3.us-west-002.backblazeb2.com)"
+                                else -> "Servidor"
                             }
                         )
                     },
@@ -290,8 +290,8 @@ fun AccountEditScreen(
                         onValueChange = { v -> vm.update { it.copy(domain = v) } },
                         label = {
                             Text(
-                                if (type == AccountType.S3) "Region (e.g. us-east-1, us-west-002, auto)"
-                                else "Windows domain (blank for workgroup / local)"
+                                if (type == AccountType.S3) "Região (ex.: us-east-1, us-west-002, auto)"
+                                else "Domínio Windows (em branco para grupo de trabalho/local)"
                             )
                         },
                         singleLine = true,
@@ -309,14 +309,14 @@ fun AccountEditScreen(
                 OutlinedTextField(
                     value = account.username,
                     onValueChange = { v -> vm.update { it.copy(username = v) } },
-                    label = { Text(if (type == AccountType.S3) "Access key ID" else "Username") },
+                    label = { Text(if (type == AccountType.S3) "ID da chave de acesso" else "Nome de usuário") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = password,
                     onValueChange = { vm.setPassword(it) },
-                    label = { Text(if (type == AccountType.S3) "Secret access key" else "Password") },
+                    label = { Text(if (type == AccountType.S3) "Chave secreta de acesso" else "Senha") },
                     singleLine = true,
                     visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
@@ -334,13 +334,13 @@ fun AccountEditScreen(
                 label = {
                     Text(
                         when (type) {
-                            AccountType.LOCAL -> "Base folder (absolute path)"
+                            AccountType.LOCAL -> "Pasta base (caminho absoluto)"
                             AccountType.SMB -> "Path: blank or / lists all shares, or /Share/Folder"
-                            AccountType.S3 -> "Bucket name"
-                            AccountType.DROPBOX -> "Base folder in Dropbox (blank = app root)"
-                            AccountType.ONEDRIVE -> "Base folder in OneDrive (blank = root)"
-                            AccountType.GOOGLE_DRIVE -> "Base folder in Drive (blank = My Drive root)"
-                            else -> "Base path on server"
+                            AccountType.S3 -> "Nome do bucket"
+                            AccountType.DROPBOX -> "Pasta base no Dropbox (em branco = raiz do app)"
+                            AccountType.ONEDRIVE -> "Pasta base no OneDrive (em branco = raiz)"
+                            AccountType.GOOGLE_DRIVE -> "Pasta base no Drive (em branco = raiz do Meu Drive)"
+                            else -> "Caminho base no servidor"
                         }
                     )
                 },
@@ -349,13 +349,13 @@ fun AccountEditScreen(
             )
 
             if (type == AccountType.FTP || type == AccountType.FTPS) {
-                SwitchRow("Passive mode", account.passiveMode) { b -> vm.update { it.copy(passiveMode = b) } }
+                SwitchRow("Modo passivo", account.passiveMode) { b -> vm.update { it.copy(passiveMode = b) } }
             }
             if (type == AccountType.WEBDAV || type == AccountType.S3) {
-                SwitchRow("Use HTTPS", account.useTls) { b -> vm.update { it.copy(useTls = b) } }
+                SwitchRow("Usar HTTPS", account.useTls) { b -> vm.update { it.copy(useTls = b) } }
             }
             if (type == AccountType.FTPS || type == AccountType.WEBDAV || type == AccountType.S3) {
-                SwitchRow("Accept self-signed certificates", account.allowSelfSigned) { b ->
+                SwitchRow("Aceitar certificados autoassinados", account.allowSelfSigned) { b ->
                     vm.update { it.copy(allowSelfSigned = b) }
                 }
             }
@@ -373,11 +373,11 @@ fun AccountEditScreen(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
-                    Text("Test connection")
+                    Text("Testar conexão")
                 }
                 when (val s = testState) {
                     is TestState.Success -> Text(
-                        "✓ Connection successful",
+                        "✓ Conexão bem-sucedida",
                         color = MaterialTheme.colorScheme.tertiary
                     )
                     is TestState.Failure -> Text(
@@ -393,7 +393,7 @@ fun AccountEditScreen(
                     onClick = { vm.delete(onBack) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
-                ) { Text("Delete account") }
+                ) { Text("Excluir conta") }
             }
         }
     }
@@ -427,7 +427,7 @@ private fun OAuthSection(
         modifier = Modifier.fillMaxWidth()
     ) { Text(if (connected) "Reconnect $providerName" else "Connect $providerName") }
     Text(
-        if (connected) "✓ Connected" else "Not connected",
+        if (connected) "✓ Conectado" else "Não conectado",
         color = if (connected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
         style = MaterialTheme.typography.bodyMedium
     )
@@ -435,7 +435,7 @@ private fun OAuthSection(
 
 private fun defaultAccountName(t: AccountType): String = when (t) {
     AccountType.LOCAL -> ""
-    AccountType.S3 -> "S3 cloud"
+    AccountType.S3 -> "Nuvem S3"
     else -> t.label
 }
 
@@ -459,14 +459,14 @@ private fun GoogleDriveSection(
     OutlinedTextField(
         value = clientId,
         onValueChange = onClientId,
-        label = { Text("Client ID") },
+        label = { Text("ID do cliente") },
         singleLine = true,
         modifier = Modifier.fillMaxWidth()
     )
     OutlinedTextField(
         value = clientSecret,
         onValueChange = onClientSecret,
-        label = { Text("Client secret") },
+        label = { Text("Segredo do cliente") },
         singleLine = true,
         modifier = Modifier.fillMaxWidth()
     )
@@ -476,7 +476,7 @@ private fun GoogleDriveSection(
         modifier = Modifier.fillMaxWidth()
     ) { Text(if (connected) "Reconnect Google Drive" else "Connect Google Drive") }
     Text(
-        if (connected) "✓ Connected" else "Not connected",
+        if (connected) "✓ Conectado" else "Não conectado",
         color = if (connected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
         style = MaterialTheme.typography.bodyMedium
     )

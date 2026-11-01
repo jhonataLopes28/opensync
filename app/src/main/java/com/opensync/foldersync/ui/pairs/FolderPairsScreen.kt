@@ -88,7 +88,7 @@ fun FolderPairsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Folder pairs") },
+                title = { Text("Pares de pastas") },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) { Icon(Icons.Filled.Menu, contentDescription = "Menu") }
                 }
@@ -96,7 +96,7 @@ fun FolderPairsScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAdd) {
-                Icon(Icons.Filled.Add, contentDescription = "Add folder pair")
+                Icon(Icons.Filled.Add, contentDescription = "Adicionar par de pastas")
             }
         }
     ) { inner ->
@@ -105,7 +105,7 @@ fun FolderPairsScreen(
             if (pairs.isEmpty()) {
                 EmptyMessage(
                     Modifier.weight(1f),
-                    "No folder pairs yet.\nTap + to create your first sync."
+                    "Nenhum par de pastas ainda.\nToque em + para criar sua primeira sincronização."
                 )
             } else {
                 val listState = rememberLazyListState()
@@ -186,7 +186,7 @@ private fun FolderPairCard(
                         overflow = TextOverflow.Ellipsis
                     )
                     IconButton(onClick = onSync) {
-                        Icon(Icons.Filled.PlayArrow, contentDescription = "Sync now")
+                        Icon(Icons.Filled.PlayArrow, contentDescription = "Sincronizar agora")
                     }
                 }
             }
@@ -206,19 +206,19 @@ private fun ActiveSyncSection(active: ActiveSync, onCancel: () -> Unit) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(
-                    active.message.ifBlank { "Syncing…" },
+                    active.message.ifBlank { "Sincronizando…" },
                     style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                val counts = if (active.total > 0) "${active.done} / ${active.total} files" else "Scanning…"
+                val counts = if (active.total > 0) "${active.done} / ${active.total} files" else "Verificando…"
                 Text(
                     counts,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            TextButton(onClick = onCancel) { Text("Cancel") }
+            TextButton(onClick = onCancel) { Text("Cancelar") }
         }
     }
 }
@@ -230,7 +230,7 @@ private fun directionArrow(pair: FolderPair): String = when (pair.direction.name
 }
 
 private fun remoteLabel(pair: FolderPair): String {
-    val target = if (pair.remoteAccountId == null) "Local" else "Remote"
+    val target = if (pair.remoteAccountId == null) "Local" else "Remoto"
     return "$target: ${pair.remoteFolder.ifBlank { "/" }}"
 }
 

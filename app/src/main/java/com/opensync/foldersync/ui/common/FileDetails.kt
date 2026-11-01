@@ -61,17 +61,17 @@ fun FileDetailsDialog(info: DetailsInfo, onDismiss: () -> Unit) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Close") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } },
         title = { Text(info.name, maxLines = 2, overflow = TextOverflow.Ellipsis) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                DetailRow("Type", info.typeLabel)
-                if (!info.isDirectory && size != null) DetailRow("Size", formatBytes(size))
-                extra?.itemCount?.let { DetailRow("Contains", "$it item(s)") }
-                extra?.dimensions?.let { DetailRow("Dimensions", it) }
-                extra?.duration?.let { DetailRow("Duration", it) }
-                info.location?.let { DetailRow("Location", it) }
-                if (modified != null && modified > 0) DetailRow("Modified", formatDate(modified))
+                DetailRow("Tipo", info.typeLabel)
+                if (!info.isDirectory && size != null) DetailRow("Tamanho", formatBytes(size))
+                extra?.itemCount?.let { DetailRow("Contém", "$it item(s)") }
+                extra?.dimensions?.let { DetailRow("Dimensões", it) }
+                extra?.duration?.let { DetailRow("Duração", it) }
+                info.location?.let { DetailRow("Localização", it) }
+                if (modified != null && modified > 0) DetailRow("Modificado", formatDate(modified))
             }
         }
     )
@@ -90,9 +90,9 @@ private fun DetailRow(label: String, value: String) {
     }
 }
 
-/** Friendly type label from a filename (or "Folder"). */
+/** Friendly type label from a filename (or "Pasta"). */
 fun fileTypeLabel(name: String, isDirectory: Boolean): String {
-    if (isDirectory) return "Folder"
+    if (isDirectory) return "Pasta"
     val ext = name.substringAfterLast('.', "").lowercase()
     if (ext.isEmpty()) return "File"
     val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)

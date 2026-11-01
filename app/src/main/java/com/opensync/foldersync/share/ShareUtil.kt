@@ -70,7 +70,7 @@ object ShareUtil {
 
     fun share(context: Context, bundle: ShareBundle) {
         if (bundle.uris.isEmpty()) {
-            Toast.makeText(context, "Nothing to share", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Nada para compartilhar", Toast.LENGTH_SHORT).show()
             return
         }
         val intent = if (bundle.uris.size == 1) {
@@ -93,7 +93,7 @@ object ShareUtil {
     /** Share note contents as plain text (what messaging / note apps expect). */
     fun shareText(context: Context, text: String, subject: String? = null) {
         if (text.isBlank()) {
-            Toast.makeText(context, "Nothing to share", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Nada para compartilhar", Toast.LENGTH_SHORT).show()
             return
         }
         val intent = Intent(Intent.ACTION_SEND)
@@ -106,7 +106,7 @@ object ShareUtil {
     private fun launchChooser(context: Context, intent: Intent) {
         try {
             context.startActivity(
-                Intent.createChooser(intent, "Share")
+                Intent.createChooser(intent, "Compartilhar")
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             )
         } catch (e: Exception) {

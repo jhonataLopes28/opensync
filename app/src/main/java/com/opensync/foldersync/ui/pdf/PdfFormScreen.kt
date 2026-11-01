@@ -60,7 +60,7 @@ fun PdfFormScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
     // Loaded field definitions (null = still loading).
     val fields by produceState<List<FormField>?>(initialValue = null, path) {
         value = if (path == null) {
-            error = "No file to open"
+            error = "Nenhum arquivo para abrir"
             emptyList()
         } else {
             runCatching { PdfForm.readFields(File(path)) }
@@ -90,11 +90,11 @@ fun PdfFormScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                 val dest = File(File(src).parentFile, "${File(src).nameWithoutExtension} (filled).pdf")
                 PdfForm.save(File(src), dest, values.toMap())
                 busy = false
-                Toast.makeText(context, "Saved → ${dest.name}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Salvo em → ${dest.name}", Toast.LENGTH_LONG).show()
                 onSaved(dest.absolutePath)
             } catch (e: Exception) {
                 busy = false
-                error = e.message ?: "Save failed"
+                error = e.message ?: "Falha ao salvar"
             }
         }
     }
@@ -102,15 +102,15 @@ fun PdfFormScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Fill form") },
+                title = { Text("Preencher formulário") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
                     IconButton(onClick = { save() }, enabled = !busy && !fields.isNullOrEmpty()) {
-                        Icon(Icons.Filled.Check, contentDescription = "Save")
+                        Icon(Icons.Filled.Check, contentDescription = "Salvar")
                     }
                 }
             )
@@ -126,7 +126,7 @@ fun PdfFormScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                 )
                 f == null -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 f.isEmpty() -> Text(
-                    "This PDF has no fillable form fields.",
+                    "Este PDF não possui campos de formulário preenchíveis.",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.align(Alignment.Center).padding(24.dp)
                 )

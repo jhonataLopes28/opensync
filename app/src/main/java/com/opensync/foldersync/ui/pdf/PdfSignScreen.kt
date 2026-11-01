@@ -85,13 +85,13 @@ fun PdfSignScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
     var showPad by remember { mutableStateOf(false) }
 
     DisposableEffect(path) {
-        if (path == null) error = "No file to sign"
+        if (path == null) error = "Nenhum arquivo para assinar"
         else try {
             val opened = PdfDoc.open(File(path))
             doc = opened
             pageCount = opened.pageCount
         } catch (e: Exception) {
-            error = e.message ?: "Cannot open this PDF"
+            error = e.message ?: "Não foi possível abrir este PDF"
         }
         onDispose { doc?.close() }
     }
@@ -109,11 +109,11 @@ fun PdfSignScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                 val dest = File(File(src).parentFile, "${File(src).nameWithoutExtension} (signed).pdf")
                 PdfSigner.save(File(src), dest, sig, placements)
                 busy = false
-                Toast.makeText(context, "Saved → ${dest.name}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Salvo em → ${dest.name}", Toast.LENGTH_LONG).show()
                 onSaved(dest.absolutePath)
             } catch (e: Exception) {
                 busy = false
-                error = e.message ?: "Save failed"
+                error = e.message ?: "Falha ao salvar"
             }
         }
     }
@@ -124,15 +124,15 @@ fun PdfSignScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                 title = { Text("Sign") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
                 actions = {
                     IconButton(onClick = { placements = placements.dropLast(1) }, enabled = placements.isNotEmpty()) {
-                        Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Undo")
+                        Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Desfazer")
                     }
                     IconButton(onClick = { save() }, enabled = !busy) {
-                        Icon(Icons.Filled.Check, contentDescription = "Save")
+                        Icon(Icons.Filled.Check, contentDescription = "Salvar")
                     }
                 }
             )
@@ -153,7 +153,7 @@ fun PdfSignScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                     }
                     if (signature != null) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Size", style = MaterialTheme.typography.labelMedium)
+                            Text("Tamanho", style = MaterialTheme.typography.labelMedium)
                             Slider(
                                 value = sizePercent,
                                 onValueChange = { sizePercent = it },
@@ -168,11 +168,11 @@ fun PdfSignScreen(onBack: () -> Unit, onSaved: (String) -> Unit) {
                         horizontalArrangement = Arrangement.Center
                     ) {
                         IconButton(onClick = { if (currentPage > 0) currentPage-- }, enabled = currentPage > 0) {
-                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Previous page")
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Página anterior")
                         }
                         Text("Page ${currentPage + 1} / $pageCount", style = MaterialTheme.typography.bodyMedium)
                         IconButton(onClick = { if (currentPage < pageCount - 1) currentPage++ }, enabled = currentPage < pageCount - 1) {
-                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Next page")
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Próxima página")
                         }
                     }
                 }
@@ -248,7 +248,7 @@ private fun SignaturePadDialog(onDismiss: () -> Unit, onDone: (Bitmap) -> Unit) 
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Draw your signature") },
+        title = { Text("Desenhe sua assinatura") },
         text = {
             Box(
                 Modifier.fillMaxWidth().height(200.dp)
@@ -283,13 +283,13 @@ private fun SignaturePadDialog(onDismiss: () -> Unit, onDone: (Bitmap) -> Unit) 
         confirmButton = {
             val all = if (current.isNotEmpty()) strokes + listOf(current) else strokes
             TextButton(onClick = { onDone(renderSignature(all, 800, 300)) }, enabled = all.isNotEmpty()) {
-                Text("Done")
+                Text("Concluído")
             }
         },
         dismissButton = {
             Row {
                 TextButton(onClick = { strokes = emptyList(); current = emptyList() }) { Text("Clear") }
-                TextButton(onClick = onDismiss) { Text("Cancel") }
+                TextButton(onClick = onDismiss) { Text("Cancelar") }
             }
         }
     )

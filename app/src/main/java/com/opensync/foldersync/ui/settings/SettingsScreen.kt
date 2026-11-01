@@ -100,7 +100,7 @@ class SettingsViewModel : ViewModel() {
 
     /** Write accounts, folder pairs and app settings to [dest], sealed under [passphrase]. */
     fun exportSettings(dest: Uri, passphrase: String) = viewModelScope.launch {
-        _backupStatus.value = "Saving…"
+        _backupStatus.value = "Salvando…"
         _backupStatus.value = runCatching {
             val bytes = SettingsBackup.export(passphrase.toCharArray())
             withContext(Dispatchers.IO) {
@@ -112,7 +112,7 @@ class SettingsViewModel : ViewModel() {
     }
 
     fun importSettings(src: Uri, passphrase: String) = viewModelScope.launch {
-        _backupStatus.value = "Loading…"
+        _backupStatus.value = "Carregando…"
         _backupStatus.value = runCatching {
             val bytes = withContext(Dispatchers.IO) {
                 Graph.appContext.contentResolver.openInputStream(src)?.use { it.readBytes() }
@@ -174,11 +174,11 @@ class SettingsViewModel : ViewModel() {
         val release = _update.value.available ?: return
         val url = release.apkUrl ?: return
         viewModelScope.launch {
-            _update.update { it.copy(downloading = true, progress = 0, status = "Downloading…") }
+            _update.update { it.copy(downloading = true, progress = 0, status = "Baixando…") }
             try {
                 val apk = File(File(Graph.appContext.cacheDir, "update"), "opensync-${release.tag}.apk")
                 UpdateChecker.download(url, apk) { p -> _update.update { it.copy(progress = p) } }
-                _update.update { it.copy(downloading = false, status = "Starting installer…") }
+                _update.update { it.copy(downloading = false, status = "Iniciando instalador…") }
                 UpdateChecker.installApk(context, apk)
             } catch (e: Exception) {
                 _update.update { it.copy(downloading = false, status = "Download failed: ${e.message}") }
@@ -235,7 +235,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text("Configurações") },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) { Icon(Icons.Filled.Menu, contentDescription = "Menu") }
                 }
@@ -251,18 +251,18 @@ fun SettingsScreen(
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Permissions", style = MaterialTheme.typography.titleMedium)
+            Text("Permissões", style = MaterialTheme.typography.titleMedium)
             SettingRow(
-                title = "All files access",
-                subtitle = if (filesGranted) "Granted" else "Required to browse and sync any folder",
+                title = "Acesso a todos os arquivos",
+                subtitle = if (filesGranted) "Concedida" else "Required to browse and sync any folder",
                 actionLabel = if (filesGranted) null else "Grant",
                 onAction = { filesLauncher.launch(PermissionUtil.allFilesIntent(context)) }
             )
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 SettingRow(
-                    title = "Notifications",
-                    subtitle = if (notifGranted) "Granted" else "Show sync progress notifications",
-                    actionLabel = if (notifGranted) null else "Enable",
+                    title = "Notificações",
+                    subtitle = if (notifGranted) "Concedida" else "Show sync progress notifications",
+                    actionLabel = if (notifGranted) null else "Ativar",
                     onAction = { notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
                 )
             }
@@ -270,14 +270,14 @@ fun SettingsScreen(
             HorizontalDivider()
             Text("Backup", style = MaterialTheme.typography.titleMedium)
             Button(onClick = { vm.syncAllNow() }, modifier = Modifier.fillMaxWidth()) {
-                Text("Sync all pairs now")
+                Text("Sincronizar todos os pares agora")
             }
             OutlinedButton(onClick = { vm.rescheduleAll() }, modifier = Modifier.fillMaxWidth()) {
-                Text("Re-apply background schedules")
+                Text("Reaplicar agendamentos em segundo plano")
             }
 
             HorizontalDivider()
-            Text("Move to a new phone", style = MaterialTheme.typography.titleMedium)
+            Text("Migrar para um novo telefone", style = MaterialTheme.typography.titleMedium)
             Text(
                 "Save your accounts (with their passwords), folder pairs and app settings to one " +
                     "passphrase-protected file, then load it on the new phone. Loading adds to what's " +
@@ -286,15 +286,15 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Button(onClick = { askExportPassphrase = true }, modifier = Modifier.fillMaxWidth()) {
-                Text("Save settings to a file")
+                Text("Salvar configurações em um arquivo")
             }
             OutlinedButton(onClick = { importLauncher.launch(arrayOf("*/*")) }, modifier = Modifier.fillMaxWidth()) {
-                Text("Load settings from a file")
+                Text("Carregar configurações de um arquivo")
             }
             backupStatus?.let { Text(it, style = MaterialTheme.typography.bodyMedium) }
 
             HorizontalDivider()
-            Text("Background reliability", style = MaterialTheme.typography.titleMedium)
+            Text("Confiabilidade em segundo plano", style = MaterialTheme.typography.titleMedium)
             Text(
                 "Scheduled backups run through Android's WorkManager, so they keep working when the app " +
                     "is closed and after a reboot. On some phones battery optimization can still pause them — " +
@@ -303,7 +303,7 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             SettingRow(
-                title = "Battery optimization",
+                title = "Otimização de bateria",
                 subtitle = if (batteryUnrestricted) "Unrestricted — backups can run anytime"
                 else "Optimized — background syncs may be delayed or skipped",
                 actionLabel = if (batteryUnrestricted) null else "Allow",
@@ -351,7 +351,7 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                Text("Check for updates")
+                Text("Verificar atualizações")
             }
 
             updateState.status?.let { Text(it, style = MaterialTheme.typography.bodyMedium) }
@@ -380,7 +380,7 @@ fun SettingsScreen(
             }
 
             HorizontalDivider()
-            Text("About", style = MaterialTheme.typography.titleMedium)
+            Text("Sobre", style = MaterialTheme.typography.titleMedium)
             Text("OpenSync ${updateState.current}", style = MaterialTheme.typography.bodyMedium)
             Text(
                 "A free, ad-free file manager, gallery and folder-sync app. " +
@@ -393,11 +393,11 @@ fun SettingsScreen(
 
     if (askExportPassphrase) {
         PassphraseDialog(
-            title = "Protect the backup",
+            title = "Proteja o backup",
             message = "The file holds your account passwords, so it's encrypted. You'll need this " +
                 "passphrase to load it — it can't be recovered.",
             confirm = true,
-            actionLabel = "Next",
+            actionLabel = "Avançar",
             onDismiss = { askExportPassphrase = false },
             onDone = { pass ->
                 askExportPassphrase = false
@@ -408,7 +408,7 @@ fun SettingsScreen(
     }
     importSource?.let { src ->
         PassphraseDialog(
-            title = "Backup passphrase",
+            title = "Frase-senha do backup",
             message = "Enter the passphrase this backup was saved with.",
             confirm = false,
             actionLabel = "Load",
@@ -442,7 +442,7 @@ private fun PassphraseDialog(
                 OutlinedTextField(
                     value = pass,
                     onValueChange = { pass = it },
-                    label = { Text("Passphrase") },
+                    label = { Text("Frase-senha") },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -452,7 +452,7 @@ private fun PassphraseDialog(
                     OutlinedTextField(
                         value = again,
                         onValueChange = { again = it },
-                        label = { Text("Repeat passphrase") },
+                        label = { Text("Repita a frase-senha") },
                         singleLine = true,
                         isError = mismatch,
                         visualTransformation = PasswordVisualTransformation(),
@@ -468,7 +468,7 @@ private fun PassphraseDialog(
                 enabled = pass.isNotEmpty() && (!confirm || pass == again)
             ) { Text(actionLabel) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 

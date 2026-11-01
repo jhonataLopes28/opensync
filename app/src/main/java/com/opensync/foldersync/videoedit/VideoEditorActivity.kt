@@ -152,7 +152,7 @@ class VideoEditorActivity : ComponentActivity() {
 private enum class VideoTool(val label: String, val icon: ImageVector) {
     TRIM("Trim", Icons.Filled.ContentCut),
     TRANSFORM("Transform", Icons.Filled.Crop),
-    FILTERS("Filters", Icons.Filled.PhotoFilter),
+    FILTERS("Filtros", Icons.Filled.PhotoFilter),
     TONE("Tone", Icons.Filled.Tune),
     DECORATE("Decorate", Icons.Filled.EmojiEmotions),
     SPEED("Speed", Icons.Filled.Speed),
@@ -162,14 +162,14 @@ private enum class VideoTool(val label: String, val icon: ImageVector) {
 private data class ToneControl(val label: String, val get: (VideoEdits) -> Float, val set: (VideoEdits, Float) -> VideoEdits)
 
 private val TONE_CONTROLS = listOf(
-    ToneControl("Brightness", { it.color.brightness }) { e, v -> e.copy(color = e.color.copy(brightness = v)) },
+    ToneControl("Brilho", { it.color.brightness }) { e, v -> e.copy(color = e.color.copy(brightness = v)) },
     ToneControl("Exposure", { it.tone.exposure }) { e, v -> e.copy(tone = e.tone.copy(exposure = v)) },
-    ToneControl("Contrast", { it.color.contrast }) { e, v -> e.copy(color = e.color.copy(contrast = v)) },
+    ToneControl("Contraste", { it.color.contrast }) { e, v -> e.copy(color = e.color.copy(contrast = v)) },
     ToneControl("Highlights", { it.tone.highlights }) { e, v -> e.copy(tone = e.tone.copy(highlights = v)) },
     ToneControl("Shadows", { it.tone.shadows }) { e, v -> e.copy(tone = e.tone.copy(shadows = v)) },
-    ToneControl("Saturation", { it.color.saturation }) { e, v -> e.copy(color = e.color.copy(saturation = v)) },
-    ToneControl("Warmth", { it.color.warmth }) { e, v -> e.copy(color = e.color.copy(warmth = v)) },
-    ToneControl("Tint", { it.color.tint }) { e, v -> e.copy(color = e.color.copy(tint = v)) },
+    ToneControl("Saturação", { it.color.saturation }) { e, v -> e.copy(color = e.color.copy(saturation = v)) },
+    ToneControl("Temperatura", { it.color.warmth }) { e, v -> e.copy(color = e.color.copy(warmth = v)) },
+    ToneControl("Matiz", { it.color.tint }) { e, v -> e.copy(color = e.color.copy(tint = v)) },
     ToneControl("Sharpness", { it.tone.sharpness }) { e, v -> e.copy(tone = e.tone.copy(sharpness = v)) },
     ToneControl("Vignette", { it.tone.vignette }) { e, v -> e.copy(tone = e.tone.copy(vignette = v)) }
 )
@@ -372,7 +372,7 @@ private fun VideoEditorScreen(uri: Uri, onClose: () -> Unit) {
                 Toast.makeText(context, f?.let { "$what saved to ${it.parentFile?.name ?: "storage"}" } ?: "$what saved", Toast.LENGTH_SHORT).show()
                 if (closeAfter) onClose() else player.prepare()
             }.onFailure {
-                Toast.makeText(context, "Couldn't save: ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Não foi possível salvar: ${it.message}", Toast.LENGTH_LONG).show()
                 player.prepare()
             }
         }
@@ -382,7 +382,7 @@ private fun VideoEditorScreen(uri: Uri, onClose: () -> Unit) {
         val m = meta ?: return
         val e = edits
         val res = resolution
-        runSave(if (overwrite) "Video" else "Copy", closeAfter = true) {
+        runSave(if (overwrite) "Video" else "Copiar", closeAfter = true) {
             saveEditedVideo(context, uri, e, m, res, overwrite) { progress = it }
         }
     }
@@ -428,10 +428,10 @@ private fun VideoEditorScreen(uri: Uri, onClose: () -> Unit) {
             Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onClose, enabled = !saving) { Icon(Icons.Filled.Close, "Close", tint = Color.White) }
+            IconButton(onClick = onClose, enabled = !saving) { Icon(Icons.Filled.Close, "Fechar", tint = Color.White) }
             Spacer(Modifier.weight(1f))
             IconButton(onClick = { history.undo(edits)?.let { edits = it; historyVersion++ } }, enabled = canUndo && !saving) {
-                Icon(Icons.AutoMirrored.Filled.Undo, "Undo", tint = if (canUndo) Color.White else Color.Gray)
+                Icon(Icons.AutoMirrored.Filled.Undo, "Desfazer", tint = if (canUndo) Color.White else Color.Gray)
             }
             IconButton(onClick = { history.redo(edits)?.let { edits = it; historyVersion++ } }, enabled = canRedo && !saving) {
                 Icon(Icons.AutoMirrored.Filled.Redo, "Redo", tint = if (canRedo) Color.White else Color.Gray)
@@ -445,7 +445,7 @@ private fun VideoEditorScreen(uri: Uri, onClose: () -> Unit) {
             TextButton(onClick = { showSave = true }, enabled = edits.modified && !saving && meta != null) {
                 Icon(Icons.Filled.Save, null, tint = if (edits.modified) Color.White else Color.Gray)
                 Spacer(Modifier.width(6.dp))
-                Text("Save", color = if (edits.modified) Color.White else Color.Gray)
+                Text("Salvar", color = if (edits.modified) Color.White else Color.Gray)
             }
         }
 
@@ -663,7 +663,7 @@ private fun VideoEditorScreen(uri: Uri, onClose: () -> Unit) {
             text = {
                 Column {
                     Text(
-                        if (canOverwrite) "Overwrite the original, or keep it and save a copy?"
+                        if (canOverwrite) "Deseja substituir o original ou mantê-lo e salvar uma cópia?"
                         else "The edited video will be saved as a new MP4 copy; the original is kept."
                     )
                     Spacer(Modifier.height(12.dp))
@@ -688,10 +688,10 @@ private fun VideoEditorScreen(uri: Uri, onClose: () -> Unit) {
                     TextButton(onClick = { saveGif() }) { Text("Save as animated GIF instead") }
                 }
             },
-            confirmButton = { TextButton(onClick = { saveVideo(false) }) { Text("Save copy") } },
+            confirmButton = { TextButton(onClick = { saveVideo(false) }) { Text("Salvar cópia") } },
             dismissButton = {
-                if (canOverwrite) TextButton(onClick = { saveVideo(true) }) { Text("Overwrite") }
-                else TextButton(onClick = { showSave = false }) { Text("Cancel") }
+                if (canOverwrite) TextButton(onClick = { saveVideo(true) }) { Text("Sobrescrever") }
+                else TextButton(onClick = { showSave = false }) { Text("Cancelar") }
             }
         )
     }
@@ -953,8 +953,8 @@ private fun AudioPanel(
                 Icon(Icons.Filled.MusicNote, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(6.dp))
                 Text(music.name, color = Color(0xFFDDDDDD), fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-                TextButton(onClick = onPickMusic) { Text("Change") }
-                TextButton(onClick = onRemoveMusic) { Text("Remove") }
+                TextButton(onClick = onPickMusic) { Text("Alterar") }
+                TextButton(onClick = onRemoveMusic) { Text("Remover") }
             }
             VolumeRow("Music", music.volume, onMusicVolume)
         }
